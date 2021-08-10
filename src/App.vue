@@ -1,38 +1,20 @@
 <template lang="pug">
-img(src="./assets/logo.png")
-selfComponent(msg='selfComponent')
-p Store.Name = {{name}}
-router-link(to='/') Home | 
-router-link(to='/about')  About
-router-view
-
+#App
+  #Nav
+    el-menu.el-menu-demo(:default-active='activeIndex' mode='horizontal' @select='handleSelect' router='True')
+      el-menu-item(index='/') Home
+      el-menu-item(index='edit') Edit
+  router-view
 </template>
-
-<script setup>
-import selfComponent from "./components/selfComponent.vue";
-
-console.log("在script setup內的會在mounted之前被讀取");
-</script>
-<script>
-export default {
-  data() {
-    return {
-      name: "None",
-    };
-  },
-  mounted() {
-    console.log("在後面");
-    this.name = this.$store.state.name;
-  },
-};
-</script>
-
 <style lang="stylus">
-#app
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+*,html
+  margin 0
+  padding 0
+  font-family 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+  'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+#App
+  position relative
+  #Nav
+    position fixed
+    z-index 2
 </style>

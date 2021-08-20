@@ -1,76 +1,147 @@
 <template lang="pug">
 #playboard
-  el-row(justify='center')
-    el-col.full-screen(v-for='key in keys')
-      .screen(:class='key.value' :style="getStyle(key.color)")
-      el-button.button(:style="getStyle(key.color)" size="medium") {{key.value}}
+  el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
+  .row(:style='playBoardStyle()')
+    .full-screen(v-for='(data,index) in data')
+      .screen
+        .judgeBar
+        game_slider
+      el-button.button.shadow(:style="getShadowStyle(data.color)" size="medium" @click="hit(key)" :id="data.key") {{data.key}}
 </template>
 <script>
 export default {
   data() {
     return {
-      keys: [
+      viewDegree: 0,
+      keys: [],
+      data: [
         {
-          value: "a",
-          color: "red",
+          key: "a",
+          color: "rgb(200,10,15)",
         },
         {
-          value: "s",
+          key: "s",
+          color: "rgb(0,10,15)",
+        },
+        {
+          key: "d",
+          color: "rgba(0,0,0,0.5)",
+        },
+        {
+          key: " ",
           color: "green",
         },
         {
-          value: "d",
+          key: "4",
           color: "green",
         },
         {
-          value: "",
+          key: "5",
           color: "green",
         },
         {
-          value: "j",
-          color: "green",
-        },
-        {
-          value: "k",
-          color: "green",
-        },
-        {
-          value: "l",
+          key: "6",
           color: "green",
         },
       ],
     };
   },
+  computed: {},
   methods: {
-    getStyle(color) {
+    playBoardStyle() {
       return {
-        borderColor: color,
+        transform: `rotateX(${this.viewDegree}deg)`,
       };
     },
+
+    getShadowStyle(color) {
+      return {
+        background: color,
+      };
+    },
+    hit(key) {},
+    commitHit(key) {
+      const button = document.getElementById(key);
+      button.classList.add("show");
+      setTimeout(() => {
+        button.classList.remove("show");
+      }, 300);
+    },
+  },
+  mounted() {},
+  created() {
+    var keys = [];
+    this.data.map((perData) => {
+      keys.push(perData.key);
+    });
+    const component = this;
+    document.onkeydown = function (event) {
+      keys.map((key) => {
+        if (key === event.key) {
+          component.commitHit(key);
+        }
+      });
+    };
   },
 };
 </script>
 <style lang="stylus" scoped>
 #playboard
+  transform-style: preserve-3d;
+  position: relative;
+  transition: transform 0.5s;
+  perspective: 30rem;
+  width 100%
+  margin-top 5%
+  .slider
+    position absolute
+    top 5%
+  .row
+    flex-wrap nowrap
+    width 100%
+    display flex
   .full-screen
-    max-width 14%
-    height 80vh
+    height 70vh
+    width 100%
+    position relative
     .screen
-      box-shadow: 10px 5px 5px rgba(0,0,0,0.2)
-      border-style solid
-      border-width 0.1rem
-      height 80%
-      border-radius 0.5rem 0.5rem 0 0
+      box-shadow 0px 0px 3px rgba(0,0,0,1)
+      height 100%
+      overflow hidden
+      .judgeBar
+        width 100%
+        height 1rem
+        background red
+        position absolute
+        top 80%
     .button
+      position relative
       width 100%
-      height 5rem
-      border-radius 0 0 0.5rem 0.5rem
+      height 6rem
       text-align center
-      box-shadow: 10px 5px 5px rgba(0,0,0,0.2)
+      border-width 0rem
+      box-shadow 0px 0px 3px rgba(0,0,0,1)
       text-align center
       border-style solid
-      border-width 0.1rem
-      font-size 3rem
+      border-radius 0rem 0rem 0.5rem 0.5rem
+      font-size 2rem
       font-family '標楷體'
       padding 0
+      transition 0.2s
+      opacity 0.5
+      color white
+      span
+      &:hover
+        opacity 0.7
+        color white
+      &:active
+        transition 0s
+        opacity 0.9
+        height 8rem
+        color white
+    .show
+      transition 0s
+      opacity 0.9
+      height 8rem
+      color white
 </style>

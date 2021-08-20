@@ -1,13 +1,14 @@
 <template lang="pug">
 #App
   #Nav
-    el-menu.el-menu-demo(:default-active='activeIndex' mode='horizontal' @select='handleSelect' router='True')
+    el-menu.el-menu-demo(mode='horizontal' :router='true')
       el-menu-item(index='/') Home
       el-menu-item(index='edit') Edit
   router-view
 </template>
 <style lang="stylus">
 *,html
+  box-sizing border-box;
   margin 0
   padding 0
   font-family 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',

@@ -1,1 +1,0 @@
-import{r as a,o as e,c as r,a as n,w as o}from"./vendor.501afb46.js";const s={id:"Edit"};const t={render:function(t,d){const l=a("el-header"),i=a("playboard"),c=a("el-main");return e(),r("div",s,[n(l),n(c,null,{default:o((()=>[n(i)])),_:1})])}};export{t as default};

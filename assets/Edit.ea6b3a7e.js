@@ -1,1 +1,0 @@
-import{r as e,o as a,c as r,a as t,w as o}from"./vendor.501afb46.js";const d={id:"Edit"};const s={render:function(s,l){const n=e("el-header"),c=e("playboard"),f=e("el-col"),i=e("el-row");return a(),r("div",d,[t(n),t(i,{justify:"center"},{default:o((()=>[t(f,{xl:16,lg:20,md:24},{default:o((()=>[t(c)])),_:1})])),_:1})])}};export{s as default};

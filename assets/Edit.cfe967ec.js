@@ -1,0 +1,1 @@
+import{r as e,o as a,c as r,a as t,w as d}from"./vendor.7ca2fade.js";const o={id:"Edit"};const s={render:function(s,l){const n=e("el-header"),c=e("playboard"),f=e("el-col"),i=e("el-row");return a(),r("div",o,[t(n),t(i,{justify:"center"},{default:d((()=>[t(f,{xl:16,lg:20,md:24},{default:d((()=>[t(c)])),_:1})])),_:1})])}};export{s as default};

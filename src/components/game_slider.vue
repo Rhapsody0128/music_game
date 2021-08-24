@@ -1,9 +1,8 @@
 <template lang="pug">
-.game_slider(:style='gameSliderStyle' v-if="life<100 && start && born!==0" )
+.game_slider(:style='gameSliderStyle' v-if="life<100 && start && born!==0" @click="destroy()")
 </template>
 <script>
 export default {
-  emits: ["destroy"],
   data() {
     return {
       bpm: 20,
@@ -28,7 +27,7 @@ export default {
   },
   methods: {
     destroy() {
-      console.log("object");
+      this.start = false;
     },
   },
   mounted() {
@@ -44,10 +43,11 @@ export default {
 <style lang="stylus" scoped>
 .game_slider
   width 100%
-  height 1rem
+  height 1.1rem
   top 5%
   position absolute
-  border-radius 0.1rem
+  border-radius 1rem
   padding 0
   margin 0
+  box-shadow 0px 0px 2px black
 </style>

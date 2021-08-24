@@ -1,56 +1,56 @@
 <template lang="pug">
 #playboard
-  el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
   .row(:style='playBoardStyle()')
-    el-button(@click="gameStart()") start
     .full-screen(v-for='(data,index) in data')
       .screen(:id="'S'+data.key")
-        .judgeBar
-        game_slider(@click="destroy($event)" v-if='start' v-for='(timeStamp,index) in data.timeStamp' :class="data.key" :color='data.color' :born="timeStamp")
-      el-button.button.shadow(:style="getShadowStyle(data.color)" size="medium" @click="hit(data.key)" :id="'B'+data.key") {{data.key}}
+        game_slider(@click="destroy()" v-if='start' v-for='(timeStamp,index) in data.timeStamp' :class="data.key" :color='data.color' :born="timeStamp")
+      el-button.button.shadow(:style="getShadowStyle(data.color)" size="medium" @click="hit(data.key,data.color)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
 export default {
+  props: {
+    start: Boolean,
+    viewDegree: Number,
+  },
   data() {
     return {
-      a: [1, 2, 3],
-      start: false,
-      viewDegree: 0,
-      startTimeStamp: 0,
+      score: 0,
+      combo: 0,
+      maxCombo: 0,
       data: [
         {
           key: "a",
           color: "rgb(200,10,15)",
-          timeStamp: [100, 800],
+          timeStamp: [100, 300, 500, 700, 900, 1100, 1300, 1500, 1700, 1900],
         },
         {
           key: "s",
           color: "rgb(0,10,15)",
           timeStamp: [5000],
         },
-        // {
-        //   key: "d",
-        //   color: "rgba(0,0,0,0.5)",
-        //   timeStamp: [1000, 3000],
-        // },
-        // {
-        //   key: " ",
-        //   color: "green",
-        //   timeStamp: [1000, 2000],
-        // },
-        // {
-        //   key: "4",
-        //   color: "green",
-        //   timeStamp: [2000, 3000],
-        // },
+        {
+          key: "d",
+          color: "rgba(0,0,0,0.5)",
+          timeStamp: [3000],
+        },
+        {
+          key: "f",
+          color: "rgba(255,255,255,1)",
+          timeStamp: [1000, 2000],
+        },
+        {
+          key: "4",
+          color: "rgba(200,10,10,0.5)",
+          timeStamp: [2000, 3000],
+        },
         // {
         //   key: "5",
-        //   color: "green",
+        //   color: "rgba(200,200,10,0.5)",
         //   timeStamp: [1, 2000, 3000],
         // },
         // {
         //   key: "6",
-        //   color: "green",
+        //   color: "rgba(200,200,200,0.5)",
         //   timeStamp: [1000, 2000, 3000],
         // },
       ],
@@ -58,9 +58,6 @@ export default {
   },
   computed: {},
   methods: {
-    gameStart() {
-      this.start = true;
-    },
     playBoardStyle() {
       return {
         transform: `
@@ -73,33 +70,64 @@ export default {
         background: color,
       };
     },
-    hit(key) {
-      this.judge(key);
+    hit(key, color) {
       const sliders = document.getElementsByClassName(key);
       if (sliders.length > 0) {
+        this.appendEffect(key, sliders[0].style.top, color);
         sliders[0].click();
-        console.log(sliders[0]);
+      }
+    },
+    judge(position) {
+      var value = parseInt(position);
+      var word = "";
+      if (value === 80) {
+        this.score += 100;
+        this.combo++;
+        word = "perfect";
+      } else if (85 > value && value > 75 && value != 80) {
+        this.score += 30;
+        this.combo++;
+        word = "excellent";
+      } else if ((90 >= value && value >= 85) || (75 >= value && value >= 70)) {
+        this.score += 10;
+        this.combo++;
+        word = "good";
+      } else {
+        this.combo = 0;
+        word = "miss";
       }
 
-      // console.log(last);
-      // if (last !== null) {
-      //   last.remove();
-      // }
+      if (this.combo > 10 && this.combo <= 30) {
+        this.score += 5;
+      } else if (this.combo > 30 && this.combo <= 50) {
+        this.score += 10;
+      } else if (this.combo > 50 && this.combo <= 100) {
+        this.score += 25;
+      } else if (this.combo > 100 && this.combo <= 200) {
+        this.score += 35;
+      } else if (this.combo > 200) {
+        this.score += 50;
+      }
+
+      if (this.combo > this.maxCombo) {
+        this.maxCombo = this.combo;
+      }
+      return word;
     },
-    destroy(e) {
-      this.$emit("destroy", "");
-    },
-    judge(key) {
-      // const screen = document.getElementById("S" + key);
-      // screen.firstChild.remove();
-    },
-    commitHit(key) {
-      const button = document.getElementById("B" + key);
-      button.click();
-      button.classList.add("show");
+    appendEffect(key, position, color) {
+      const screen = document.getElementById("S" + key);
+      const effect = document.createElement("div");
+      effect.appendChild(document.createTextNode(`${this.judge(position)}`));
+      effect.classList.add("effect");
+      effect.style.top = position;
+      effect.style.background = color;
+      screen.appendChild(effect);
       setTimeout(() => {
-        button.classList.remove("show");
+        effect.remove();
       }, 300);
+    },
+    destroy() {
+      this.$emit("destroy");
     },
   },
   mounted() {},
@@ -108,7 +136,12 @@ export default {
     document.onkeydown = function (event) {
       component.data.map((data) => {
         if (data.key === event.key) {
-          component.commitHit(data.key);
+          const button = document.getElementById("B" + data.key);
+          button.click();
+          button.classList.add("show");
+          setTimeout(() => {
+            button.classList.remove("show");
+          }, 300);
         }
       });
     };
@@ -116,6 +149,31 @@ export default {
   watch: {},
 };
 </script>
+<style lang="stylus">
+.effect
+  width 100%
+  height 1.1rem
+  top 5%
+  position absolute
+  border-radius 1rem
+  padding 0
+  margin 0
+  background rgba(0,0,0,0.1)
+  animation fadeInOut 0.5s
+  text-align center
+  opacity 0
+  color white
+  text-shadow 0px 0px 2px black
+  box-shadow 0px 0px 2px black
+@keyframes fadeInOut {
+  from{
+    opacity 1
+  }
+  100%{
+    opacity 0
+  }
+}
+</style>
 <style lang="stylus" scoped>
 #playboard
   transform-style: preserve-3d;
@@ -141,12 +199,16 @@ export default {
       box-shadow 0px 0px 1px rgba(0,0,0,1)
       height 100%
       overflow hidden
-      .judgeBar
+      &:after
         width 100%
         height 1rem
-        border 1px solid black
+        border-radius 1rem
         position absolute
-        top 90%
+        top 80%
+        text-align center
+        transition 0.5
+        content ''
+        box-shadow 0px 0px 2px black
     .button
       position relative
       width 100%
@@ -160,19 +222,17 @@ export default {
       font-size 2rem
       font-family '標楷體'
       padding 0
-      transition 0.2s
       opacity 0.5
       color white
+      text-shadow 0px 0px 5px black
+      transition 0.1s
       span
       &:hover
         opacity 0.7
-        color white
       &:active
-        transition 0s
         opacity 0.9
-        height 8rem
-        color white
+        height 5rem
     .show
-      opacity 0.9
+      opacity 1
       height 5rem
 </style>

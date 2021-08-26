@@ -2,15 +2,9 @@
 #Edit
   el-header
   el-row(justify='center')
-    el-col(:md='2')
-      el-col(:md='12')
-        el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
-      el-col(:md='12')
-        el-button(@click="start = true") start
-        el-button(@click="aa()") aa
+    //- el-button(@click="test()")
     el-col(:xl='16' :lg='20' :md='24')
-      playboard(:start='start' :viewDegree='viewDegree')
-  iframe(width='640' height='390' :src="'http://www.youtube.com/'+videoId")
+      playboard(:musicData="musicData")
 
 
     
@@ -19,45 +13,107 @@
 export default {
   data() {
     return {
-      start: false,
-      viewDegree: 0,
-      videoId: ["J2Zzu2C3C3E"],
+      musicData: {
+        id: "aVbPvf2aYH4",
+        title: "",
+        url: "",
+        mapper: "",
+        src: "",
+        originSong: "",
+        producer: "",
+        difficulty: "",
+        duration: 200,
+        satisfaction: null,
+        playCount: null,
+        viewCount: null,
+
+        mapData: [
+          {
+            key: "a",
+            color: "rgb(200,10,15)",
+            timeStamp: [100, 300, 500, 700, 900, 1100, 1300, 1500, 1700, 1900],
+          },
+          {
+            key: "s",
+            color: "rgb(0,10,15)",
+            timeStamp: [5000],
+          },
+          {
+            key: "d",
+            color: "rgba(0,0,0,0.5)",
+            timeStamp: [3000],
+          },
+          {
+            key: "f",
+            color: "rgba(255,255,255,1)",
+            timeStamp: [1000, 2000],
+          },
+          {
+            key: "4",
+            color: "rgba(200,10,10,0.5)",
+            timeStamp: [2000, 3000],
+          },
+          {
+            key: "5",
+            color: "rgba(200,200,10,0.5)",
+            timeStamp: [1, 2000, 3000],
+          },
+          {
+            key: "6",
+            color: "rgba(200,200,200,0.5)",
+            timeStamp: [1000, 2000, 3000],
+          },
+        ],
+      },
     };
   },
   methods: {
-    aa() {
+    getInfo() {
       const request = window.gapi.client.youtube.videos.list({
         part: ["snippet,contentDetails,statistics"],
-        id: this.videoId,
+        id: this.id,
       });
+      const component = this;
       request.execute(function (response) {
         console.log(response);
-        // response.items.map((item) => {
-        //   try {
-        //     if (!item.id.playlistId) {
-        //       var card = {};
-        //       card.id = item.id;
-        //       card.title = item.snippet.title;
-        //       card.url = "https://www.youtube.com/embed/" + card.id;
-        //       card.description = item.snippet.description;
-        //       card.channelTitle = item.snippet.channelTitle;
-        //       card.src = "http://img.youtube.com/vi/" + card.id + "/0.jpg";
-        //       card.viewCount = item.statistics.viewCount;
-        //       cards.splice(Math.floor(Math.random() * cards.length), 0, card);
-        //       console.log(cards);
-        //     }
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // });
+        response.items.map((item) => {
+          try {
+            if (!item.id.playlistId) {
+              component.musicData.id = item.id;
+              component.musicData.originSong = item.snippet.title;
+              component.musicData.url =
+                "https://www.youtube.com/embed/" + item.id;
+              component.musicData.producer = item.snippet.channelTitle;
+              component.musicData.src =
+                "http://img.youtube.com/vi/" + item.id + "/0.jpg";
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        });
       });
+    },
+  },
+  computed: {
+    duration() {
+      var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+      var hours = 0,
+        minutes = 0,
+        seconds = 0,
+        totalseconds;
+      if (reptms.exec("PT15M33S")) {
+        var matches = reptms.exec("PT15M33S");
+        if (matches[1]) hours = Number(matches[1]);
+        if (matches[2]) minutes = Number(matches[2]);
+        if (matches[3]) seconds = Number(matches[3]);
+        totalseconds = hours * 3600 + minutes * 60 + seconds;
+        return totalseconds;
+      }
     },
   },
   mounted() {
     gapi.client.load("youtube", "v3");
     gapi.client.setApiKey(import.meta.env.VITE_YOUTUBE_API);
-
-    console.log(import.meta.env.VITE_YOUTUBE_API);
   },
 };
 </script>

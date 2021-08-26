@@ -1,63 +1,47 @@
 <template lang="pug">
 #playboard
+  el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
+  el-button(@click="gameStart()") start
+  el-button(@click="gamePause()") pause
+  el-slider(v-model="currentProgress" height="300" :max='playerEnd')
   .row(:style='playBoardStyle()')
-    .full-screen(v-for='(data,index) in data')
+    .player
+      #player
+    .full-screen(v-for='(data,index) in musicData.mapData')
       .screen(:id="'S'+data.key")
-        game_slider(@click="destroy()" v-if='start' v-for='(timeStamp,index) in data.timeStamp' :class="data.key" :color='data.color' :born="timeStamp")
+        game_slider(@click="destroy()" v-if='start' v-for='(timeStamp,index) in data.timeStamp' :class="data.key" :color='data.color' :born="timeStamp" :playState='playState' :currentTime='currentTime')
       el-button.button.shadow(:style="getShadowStyle(data.color)" size="medium" @click="hit(data.key,data.color)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
 export default {
   props: {
-    start: Boolean,
-    viewDegree: Number,
+    musicData: Object,
   },
   data() {
     return {
+      playState: 0,
+      start: false,
+      viewDegree: 0,
+      currentProgress: 0,
+      currentTime: null,
+      playerEnd: 200,
+      player: null,
       score: 0,
       combo: 0,
       maxCombo: 0,
-      data: [
-        {
-          key: "a",
-          color: "rgb(200,10,15)",
-          timeStamp: [100, 300, 500, 700, 900, 1100, 1300, 1500, 1700, 1900],
-        },
-        {
-          key: "s",
-          color: "rgb(0,10,15)",
-          timeStamp: [5000],
-        },
-        {
-          key: "d",
-          color: "rgba(0,0,0,0.5)",
-          timeStamp: [3000],
-        },
-        {
-          key: "f",
-          color: "rgba(255,255,255,1)",
-          timeStamp: [1000, 2000],
-        },
-        {
-          key: "4",
-          color: "rgba(200,10,10,0.5)",
-          timeStamp: [2000, 3000],
-        },
-        // {
-        //   key: "5",
-        //   color: "rgba(200,200,10,0.5)",
-        //   timeStamp: [1, 2000, 3000],
-        // },
-        // {
-        //   key: "6",
-        //   color: "rgba(200,200,200,0.5)",
-        //   timeStamp: [1000, 2000, 3000],
-        // },
-      ],
     };
   },
   computed: {},
   methods: {
+    gameStart() {
+      this.start = true;
+      this.playState = 1;
+      this.player.playVideo();
+    },
+    gamePause() {
+      this.playState = 2;
+      this.player.pauseVideo();
+    },
     playBoardStyle() {
       return {
         transform: `
@@ -129,12 +113,35 @@ export default {
     destroy() {
       this.$emit("destroy");
     },
+    onPlayerReady(event) {
+      event.target.loadVideoById({
+        videoId: this.musicData.id,
+        startSeconds: 0,
+        endSeconds: null,
+        suggestedQuality: "medium",
+      });
+      this.player.setPlaybackQuality("medium");
+      this.currentTime = this.player.getCurrentTime();
+    },
   },
-  mounted() {},
+  mounted() {
+    this.player = new YT.Player("player", {
+      videoId: this.musicData.id,
+      width: "100%",
+      height: "100%",
+      playerVars: {
+        loop: 1,
+        rel: 0,
+      },
+      events: {
+        onReady: this.onPlayerReady,
+      },
+    });
+  },
   created() {
     const component = this;
     document.onkeydown = function (event) {
-      component.data.map((data) => {
+      component.musicData.mapData.map((data) => {
         if (data.key === event.key) {
           const button = document.getElementById("B" + data.key);
           button.click();
@@ -146,7 +153,14 @@ export default {
       });
     };
   },
-  watch: {},
+  watch: {
+    currentProgress() {
+      this.player.seekTo(this.currentProgress);
+    },
+    currentTime(val) {
+      console.log(val);
+    },
+  },
 };
 </script>
 <style lang="stylus">
@@ -182,6 +196,11 @@ export default {
   perspective: 30rem;
   width 100%
   margin-top 5%
+  .player
+    position absolute
+    opacity 0.5
+    height 100%
+    width 100%
   .slider
     position absolute
     top 5%

@@ -8,11 +8,16 @@ export default {
       bpm: 20,
       life: 0,
       start: false,
+      pause: false,
+      lifeTimer: null,
+      slideTimer: null,
     };
   },
   props: {
     color: String,
     born: Number,
+    playState: Number,
+    currentTime: Number,
   },
   computed: {
     gameSliderStyle() {
@@ -27,16 +32,37 @@ export default {
   },
   methods: {
     destroy() {
+      console.log(this.playState);
       this.start = false;
+    },
+    play() {
+      if (this.life === 0) {
+        this.lifeTimer = setTimeout(() => {
+          this.slideTimer = setInterval(() => {
+            this.life += 1;
+          }, this.bpm);
+          this.start = true;
+        }, this.born - this.currentTime);
+      } else {
+        this.slideTimer = setInterval(() => {
+          this.life += 1;
+        }, this.bpm);
+        this.start = true;
+      }
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.lifeTimer = setInterval(() => {
-        this.life += 1;
-      }, this.bpm);
-      this.start = true;
-    }, this.born);
+    this.play();
+  },
+  watch: {
+    playState(val) {
+      if (val === 2) {
+        clearInterval(this.lifeTimer);
+        clearInterval(this.slideTimer);
+      } else if (val === 1) {
+        this.play();
+      }
+    },
   },
 };
 </script>

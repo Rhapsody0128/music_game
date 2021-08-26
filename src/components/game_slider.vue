@@ -1,67 +1,44 @@
 <template lang="pug">
-.game_slider(:style='gameSliderStyle' v-if="life<100 && start && born!==0" @click="destroy()")
+.game_slider(:style='gameSliderStyle' v-if="exist" @click="destroy()")
 </template>
 <script>
 export default {
   data() {
     return {
-      bpm: 20,
-      life: 0,
-      start: false,
-      pause: false,
-      lifeTimer: null,
-      slideTimer: null,
+      break: false,
     };
   },
   props: {
+    bpm: Number,
     color: String,
-    born: Number,
-    playState: Number,
+    bornTime: Number,
     currentTime: Number,
   },
   computed: {
     gameSliderStyle() {
-      if (this.life > 0) {
-        return {
-          top: this.life + "%",
-          background: this.color,
-        };
+      return {
+        top: this.top + "%",
+        background: this.color,
+      };
+    },
+    top() {
+      if (this.currentTime - this.bornTime > 0) {
+        return (this.currentTime - this.bornTime) * 75 * this.bpm;
       } else {
+        return 0;
+      }
+    },
+    exist() {
+      if (this.top > 0 && this.top < 100 && this.break === false) {
+        return true;
+      } else {
+        return false;
       }
     },
   },
   methods: {
     destroy() {
-      console.log(this.playState);
-      this.start = false;
-    },
-    play() {
-      if (this.life === 0) {
-        this.lifeTimer = setTimeout(() => {
-          this.slideTimer = setInterval(() => {
-            this.life += 1;
-          }, this.bpm);
-          this.start = true;
-        }, this.born - this.currentTime);
-      } else {
-        this.slideTimer = setInterval(() => {
-          this.life += 1;
-        }, this.bpm);
-        this.start = true;
-      }
-    },
-  },
-  mounted() {
-    this.play();
-  },
-  watch: {
-    playState(val) {
-      if (val === 2) {
-        clearInterval(this.lifeTimer);
-        clearInterval(this.slideTimer);
-      } else if (val === 1) {
-        this.play();
-      }
+      this.break = true;
     },
   },
 };

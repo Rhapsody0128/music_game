@@ -3,13 +3,19 @@
   el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
   el-button(@click="gameStart()") start
   el-button(@click="gamePause()") pause
-  el-slider(v-model="currentProgress" height="300" :max='playerEnd')
+  el-slider(v-model="currentTime" height="300" :max='musicData.duration' show-input @input="seekTo()" @change="seekToConfirm()")
   .row(:style='playBoardStyle()')
     .player
       #player
     .full-screen(v-for='(data,index) in musicData.mapData')
       .screen(:id="'S'+data.key")
-        game_slider(@click="destroy()" v-if='start' v-for='(timeStamp,index) in data.timeStamp' :class="data.key" :color='data.color' :born="timeStamp" :playState='playState' :currentTime='currentTime')
+        game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 
+                    :class="data.key" 
+                    :color='data.color' 
+                    :bornTime="timeStamp" 
+                    :currentTime='currentTime'
+                    :bpm="musicData.bpm"
+                    )
       el-button.button.shadow(:style="getShadowStyle(data.color)" size="medium" @click="hit(data.key,data.color)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
@@ -19,28 +25,32 @@ export default {
   },
   data() {
     return {
-      playState: 0,
-      start: false,
       viewDegree: 0,
-      currentProgress: 0,
       currentTime: null,
-      playerEnd: 200,
+      choiceTime: null,
       player: null,
       score: 0,
       combo: 0,
       maxCombo: 0,
+      lifeTimer: null,
+      playing: false,
     };
   },
   computed: {},
   methods: {
     gameStart() {
-      this.start = true;
-      this.playState = 1;
       this.player.playVideo();
+      this.playing = true;
+      this.currentTime = this.player.getCurrentTime();
+      this.lifeTimer = setInterval(() => {
+        this.currentTime += 0.03;
+      }, 30);
     },
     gamePause() {
-      this.playState = 2;
       this.player.pauseVideo();
+      this.playing = false;
+      this.currentTime = this.player.getCurrentTime();
+      clearInterval(this.lifeTimer);
     },
     playBoardStyle() {
       return {
@@ -64,11 +74,12 @@ export default {
     judge(position) {
       var value = parseInt(position);
       var word = "";
-      if (value === 80) {
+      console.log(value);
+      if (81 > value && value > 78) {
         this.score += 100;
         this.combo++;
         word = "perfect";
-      } else if (85 > value && value > 75 && value != 80) {
+      } else if ((85 > value && value > 81) || (78 >= value && value >= 75)) {
         this.score += 30;
         this.combo++;
         word = "excellent";
@@ -123,6 +134,14 @@ export default {
       this.player.setPlaybackQuality("medium");
       this.currentTime = this.player.getCurrentTime();
     },
+    seekTo() {
+      if (this.playing === false) {
+        this.player.seekTo(this.currentTime);
+      }
+    },
+    seekToConfirm() {
+      this.player.seekTo(this.currentTime);
+    },
   },
   mounted() {
     this.player = new YT.Player("player", {
@@ -152,14 +171,6 @@ export default {
         }
       });
     };
-  },
-  watch: {
-    currentProgress() {
-      this.player.seekTo(this.currentProgress);
-    },
-    currentTime(val) {
-      console.log(val);
-    },
   },
 };
 </script>

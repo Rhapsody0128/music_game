@@ -22,46 +22,49 @@ export default {
         originSong: "",
         producer: "",
         difficulty: "",
+        bpm: 1,
         duration: 200,
         satisfaction: null,
         playCount: null,
         viewCount: null,
-
         mapData: [
           {
             key: "a",
             color: "rgb(200,10,15)",
-            timeStamp: [100, 300, 500, 700, 900, 1100, 1300, 1500, 1700, 1900],
+            timeStamp: [
+              0.3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+              18, 19,
+            ],
           },
           {
             key: "s",
             color: "rgb(0,10,15)",
-            timeStamp: [5000],
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "d",
             color: "rgba(0,0,0,0.5)",
-            timeStamp: [3000],
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "f",
             color: "rgba(255,255,255,1)",
-            timeStamp: [1000, 2000],
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "4",
             color: "rgba(200,10,10,0.5)",
-            timeStamp: [2000, 3000],
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "5",
             color: "rgba(200,200,10,0.5)",
-            timeStamp: [1, 2000, 3000],
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "6",
             color: "rgba(200,200,200,0.5)",
-            timeStamp: [1000, 2000, 3000],
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
           },
         ],
       },

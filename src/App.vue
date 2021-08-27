@@ -4,6 +4,7 @@
     el-menu.el-menu-demo(mode='horizontal' :router='true')
       el-menu-item(index='/') Home
       el-menu-item(index='edit') Edit
+      el-menu-item(index='play') Play
   router-view
 </template>
 <style lang="stylus">

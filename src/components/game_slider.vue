@@ -22,10 +22,23 @@ export default {
       };
     },
     top() {
-      if (this.currentTime - this.bornTime > 0) {
-        return (this.currentTime - this.bornTime) * 75 * this.bpm;
+      if (this.sneak - this.bornTime > 0) {
+        return (this.sneak - this.bornTime) * 75 * this.bpm;
       } else {
         return 0;
+      }
+    },
+    sneak() {
+      if (this.bpm === 1) {
+        return this.currentTime + 1.15;
+      } else if (this.bpm === 1.5) {
+        return this.currentTime + 0.83;
+      } else if (this.bpm === 2) {
+        return this.currentTime + 0.56;
+      } else if (this.bpm === 0.5) {
+        return this.currentTime + 2.1;
+      } else if (this.bpm === 0.25) {
+        return this.currentTime + 4.35;
       }
     },
     exist() {

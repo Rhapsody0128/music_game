@@ -1,25 +1,20 @@
 <template lang="pug">
-#playboard
+#editboard
   .toolBar(v-loading='loading')
     el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
     el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
     el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
-    p {{score}}
+    el-button(@click="saveMapData()" plain icon='el-icon-finished' round type="warning") Save
+  el-slider(v-model="currentTime" height="300" :max='musicData.duration' show-input @input="seekTo()" @change="seekToConfirm()")
   .row(:style='playBoardStyle()')
-    .player(v-loading="loading")
-      #player
+    .player
+      #player(v-loading="loading")
     .full-screen(v-for='(data,index) in getMapData')
       .screen(:id="'S'+data.key")
-        game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 
-                    :class="data.key" 
-                    :color='data.color' 
-                    :bornTime="timeStamp" 
-                    :currentTime='currentTime'
-                    :bpm="getBpm"
-                    )
       el-button.button.shadow(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
+import { h } from "vue";
 export default {
   props: {
     musicData: Object,
@@ -33,17 +28,14 @@ export default {
       player: null,
       score: 0,
       combo: 0,
-      maxCombo: 0,
       lifeTimer: null,
       playerState: 0,
+      newMap: [],
     };
   },
   computed: {
     getMapData() {
       return this.$store.getters.getMapData;
-    },
-    getBpm() {
-      return this.$store.getters.getBpm;
     },
     getviewDegree() {
       return this.$store.getters.getviewDegree;
@@ -51,21 +43,17 @@ export default {
   },
   methods: {
     gameStart() {
+      console.log(this.player);
       this.player.playVideo();
-      this.currentTime = this.player.getCurrentTime();
       this.lifeTimer = setInterval(() => {
         if (this.playerState === 1) {
-          this.currentTime += 0.015;
+          this.currentTime += 0.05;
         }
-      }, 15);
+      }, 50);
     },
     gamePause() {
-      if (this.playerState !== 2) {
-        this.player.pauseVideo();
-        this.currentTime = this.player.getCurrentTime();
-        console.log("pase" + this.currentTime);
-        clearInterval(this.lifeTimer);
-      }
+      this.player.pauseVideo();
+      clearInterval(this.lifeTimer);
     },
     playBoardStyle() {
       return {
@@ -80,32 +68,43 @@ export default {
       };
     },
     hit(key, color) {
-      const sliders = document.getElementsByClassName(key);
-      if (sliders.length > 0) {
-        this.appendEffect(key, sliders[0].style.top, color);
-        sliders[0].click();
+      if (this.playerState === 1) {
+        this.appendEffect(key, color);
+        this.judge();
+        this.editMap(key, this.player.getCurrentTime());
       }
     },
-    judge(position) {
-      var value = parseInt(position);
-      var word = "";
-      if (80 >= value && value >= 79) {
-        this.score += 100;
-        this.combo++;
-        word = "perfect";
-      } else if ((82 >= value && value >= 80) || (79 >= value && value >= 75)) {
-        this.score += 30;
-        this.combo++;
-        word = "excellent";
-      } else if ((85 >= value && value >= 82) || (75 >= value && value >= 70)) {
-        this.score += 10;
-        this.combo++;
-        word = "good";
-      } else {
-        this.combo = 0;
-        word = "miss";
-      }
-
+    editMap(key, currentTime) {
+      this.getAMapData(key).timeStamp.push(currentTime);
+    },
+    getAMapData(key) {
+      return this.newMap.find((data) => {
+        return data.key === key;
+      });
+    },
+    initMap() {
+      this.getMapData.map((data) => {
+        var perData = {
+          key: data.key,
+          color: data.color,
+          timeStamp: [],
+        };
+        this.newMap.push(perData);
+      });
+    },
+    saveMapData() {
+      this.newMap.forEach((data) => {
+        data.timeStamp.sort();
+      });
+      this.$store.commit("saveMapData", this.newMap);
+      this.$notify({
+        title: "Map Data",
+        message: h("i", { style: "color: teal" }, "已儲存資料"),
+      });
+    },
+    judge() {
+      this.score += 100;
+      this.combo++;
       if (this.combo > 10 && this.combo <= 30) {
         this.score += 5;
       } else if (this.combo > 30 && this.combo <= 50) {
@@ -117,26 +116,26 @@ export default {
       } else if (this.combo > 200) {
         this.score += 50;
       }
-
-      if (this.combo > this.maxCombo) {
-        this.maxCombo = this.combo;
-      }
-      return word;
     },
-    appendEffect(key, position, color) {
+    appendEffect(key, color) {
       const screen = document.getElementById("S" + key);
       const effect = document.createElement("div");
-      effect.appendChild(document.createTextNode(`${this.judge(position)}`));
+      effect.appendChild(document.createTextNode(`perfect`));
       effect.classList.add("effect");
-      effect.style.top = position;
+      effect.style.top = "80%";
       effect.style.background = color;
       screen.appendChild(effect);
       setTimeout(() => {
         effect.remove();
       }, 300);
     },
-    destroy() {
-      this.$emit("destroy");
+    seekTo() {
+      if (this.playerState !== 1) {
+        this.player.seekTo(this.currentTime);
+      }
+    },
+    seekToConfirm() {
+      this.player.seekTo(this.currentTime);
     },
     onPlayerReady(event) {
       this.loading = false;
@@ -144,11 +143,10 @@ export default {
     },
     onPlayerStateChange(e) {
       this.playerState = e.data;
-      console.log(this.playerState);
     },
   },
+
   mounted() {
-    this.viewDegree = this.getViewDegree;
     this.player = new YT.Player("player", {
       videoId: this.musicData.id,
       width: "100%",
@@ -162,6 +160,7 @@ export default {
         onStateChange: this.onPlayerStateChange,
       },
     });
+    this.initMap();
   },
   created() {
     const component = this;
@@ -206,7 +205,7 @@ export default {
 }
 </style>
 <style lang="stylus" scoped>
-#playboard
+#editboard
   transform-style: preserve-3d;
   position: relative;
   transition: transform 0.5s;

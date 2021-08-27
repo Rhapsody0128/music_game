@@ -2,15 +2,17 @@
 #Edit
   el-header
   el-row(justify='center')
+    //- el-button(@click="test()")
     el-col(:xl='16' :lg='20' :md='24')
-      editboard(:musicData="musicData")
+      playboard(:musicData="musicData")
+
+
     
 </template>
 <script>
 export default {
   data() {
     return {
-      url: "",
       musicData: {
         id: "EjlMPu5sEgw",
         title: "",
@@ -49,21 +51,21 @@ export default {
             color: "rgba(255,255,255,1)",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
-          // {
-          //   key: "4",
-          //   color: "rgba(200,10,10,0.5)",
-          //   timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
-          // },
-          // {
-          //   key: "5",
-          //   color: "rgba(200,200,10,0.5)",
-          //   timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
-          // },
-          // {
-          //   key: "6",
-          //   color: "rgba(200,200,200,0.5)",
-          //   timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
-          // },
+          {
+            key: "4",
+            color: "rgba(200,10,10,0.5)",
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+          },
+          {
+            key: "5",
+            color: "rgba(200,200,10,0.5)",
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+          },
+          {
+            key: "6",
+            color: "rgba(200,200,200,0.5)",
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
+          },
         ],
       },
     };

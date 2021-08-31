@@ -2,7 +2,8 @@
 #Edit
   el-header
   el-row(justify='center')
-    el-button(@click='save()')
+    el-button(@click='save()') save
+    el-button(@click='get()') get
     el-col(:xl='16' :lg='20' :md='24')
       editboard(:musicData="musicData")
     
@@ -13,19 +14,18 @@ export default {
     return {
       url: "",
       musicData: {
-        id: "VyvhvlYvRnc",
         title: "a",
-        url: "a",
         mapper: "z",
-        src: "c",
-        originSong: "f",
-        producer: "d",
-        difficulty: "q",
         bpm: 1,
         duration: 200,
-        satisfaction: null,
-        playCount: null,
-        viewCount: null,
+        origin_song: "f",
+        youtube_id: "VyvhvlYvRnc",
+        video_url: "a",
+        img_src: "c",
+        producer: "d",
+        love_count: 0,
+        play_count: 0,
+        view_count: 0,
         mapData: [
           {
             key: "a",
@@ -72,9 +72,22 @@ export default {
   methods: {
     save() {
       this.axios
-        .get("http://localhost:4000" + "/save")
+        .post("http://localhost:4000" + "/save", this.musicData)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    get() {
+      this.axios
+        .get("http://localhost:4000" + "/get")
         .then((res) => {
           console.log(res);
+          console.log(res.data[0]);
+          JSON.parse(res.data[0].map_data);
+          console.log(JSON.parse(res.data[0].map_data));
         })
         .catch((error) => {
           console.log(error);

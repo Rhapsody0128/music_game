@@ -2,6 +2,7 @@
 #Edit
   el-header
   el-row(justify='center')
+    el-button(@click='save()')
     el-col(:xl='16' :lg='20' :md='24')
       editboard(:musicData="musicData")
     
@@ -12,14 +13,14 @@ export default {
     return {
       url: "",
       musicData: {
-        id: "EjlMPu5sEgw",
-        title: "",
-        url: "",
-        mapper: "",
-        src: "",
-        originSong: "",
-        producer: "",
-        difficulty: "",
+        id: "VyvhvlYvRnc",
+        title: "a",
+        url: "a",
+        mapper: "z",
+        src: "c",
+        originSong: "f",
+        producer: "d",
+        difficulty: "q",
         bpm: 1,
         duration: 200,
         satisfaction: null,
@@ -49,26 +50,36 @@ export default {
             color: "rgba(255,255,255,1)",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
-          // {
-          //   key: "4",
-          //   color: "rgba(200,10,10,0.5)",
-          //   timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
-          // },
-          // {
-          //   key: "5",
-          //   color: "rgba(200,200,10,0.5)",
-          //   timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
-          // },
-          // {
-          //   key: "6",
-          //   color: "rgba(200,200,200,0.5)",
-          //   timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
-          // },
+          {
+            key: "4",
+            color: "rgba(200,10,10,0.5)",
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+          },
+          {
+            key: "5",
+            color: "rgba(200,200,10,0.5)",
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+          },
+          {
+            key: "6",
+            color: "rgba(200,200,200,0.5)",
+            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
+          },
         ],
       },
     };
   },
   methods: {
+    save() {
+      this.axios
+        .get("http://localhost:4000" + "/save")
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     getInfo() {
       const request = window.gapi.client.youtube.videos.list({
         part: ["snippet,contentDetails,statistics"],

@@ -125,9 +125,6 @@ export default {
       effect.style.top = "80%";
       effect.style.background = color;
       screen.appendChild(effect);
-      setTimeout(() => {
-        effect.remove();
-      }, 300);
     },
     seekTo() {
       if (this.playerState !== 1) {
@@ -179,31 +176,6 @@ export default {
   },
 };
 </script>
-<style lang="stylus">
-.effect
-  width 100%
-  height 1.1rem
-  top 5%
-  position absolute
-  border-radius 1rem
-  padding 0
-  margin 0
-  background rgba(0,0,0,0.1)
-  animation fadeInOut 0.5s
-  text-align center
-  opacity 0
-  color white
-  text-shadow 0px 0px 2px black
-  box-shadow 0px 0px 2px black
-@keyframes fadeInOut {
-  from{
-    opacity 1
-  }
-  100%{
-    opacity 0
-  }
-}
-</style>
 <style lang="stylus" scoped>
 #editboard
   transform-style: preserve-3d;

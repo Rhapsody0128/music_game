@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       musicData: {
-        id: "EjlMPu5sEgw",
+        id: "VyvhvlYvRnc",
         title: "",
         url: "",
         mapper: "",

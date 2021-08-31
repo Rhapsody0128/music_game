@@ -36,6 +36,16 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.axios
+      .get("http://localhost:4000" + "/test")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
 };
 </script>
 <style lang="stylus" scoped></style>

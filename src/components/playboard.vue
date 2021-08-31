@@ -48,6 +48,31 @@ export default {
     getviewDegree() {
       return this.$store.getters.getviewDegree;
     },
+    judgeLine() {
+      // [
+      //   perfectLineStart,
+      //   perfectLineEnd,
+      //   ellectLineStart,
+      //   ellectLineEnd,
+      //   goodLineStart,
+      //   goodLineEnd,
+      // ];
+      if (this.getBpm === 1) {
+        return [80, 79, 82, 75, 85, 70];
+      }
+      if (this.getBpm === 1.5) {
+        return [80.5, 78.5, 83, 74, 85, 68];
+      }
+      if (this.getBpm === 2) {
+        return [81, 78, 84, 73, 89, 66];
+      }
+      if (this.getBpm === 0.5) {
+        return [79.8, 79.2, 82, 76, 84, 72];
+      }
+      if (this.getBpm === 0.25) {
+        return [79.6, 79.4, 81, 78, 83, 75];
+      }
+    },
   },
   methods: {
     gameStart() {
@@ -89,15 +114,21 @@ export default {
     judge(position) {
       var value = parseInt(position);
       var word = "";
-      if (80 >= value && value >= 79) {
+      if (this.judgeLine[0] >= value && value >= this.judgeLine[1]) {
         this.score += 100;
         this.combo++;
         word = "perfect";
-      } else if ((82 >= value && value >= 80) || (79 >= value && value >= 75)) {
+      } else if (
+        (this.judgeLine[2] >= value && value >= this.judgeLine[0]) ||
+        (this.judgeLine[1] >= value && value >= this.judgeLine[3])
+      ) {
         this.score += 30;
         this.combo++;
         word = "excellent";
-      } else if ((85 >= value && value >= 82) || (75 >= value && value >= 70)) {
+      } else if (
+        (this.judgeLine[4] >= value && value >= this.judgeLine[2]) ||
+        (this.judgeLine[3] >= value && value >= this.judgeLine[5])
+      ) {
         this.score += 10;
         this.combo++;
         word = "good";
@@ -127,13 +158,13 @@ export default {
       const screen = document.getElementById("S" + key);
       const effect = document.createElement("div");
       effect.appendChild(document.createTextNode(`${this.judge(position)}`));
+      screen.appendChild(effect);
       effect.classList.add("effect");
       effect.style.top = position;
       effect.style.background = color;
-      screen.appendChild(effect);
-      setTimeout(() => {
-        effect.remove();
-      }, 300);
+      // setTimeout(() => {
+      //   effect.remove();
+      // }, 300);
     },
     destroy() {
       this.$emit("destroy");
@@ -180,31 +211,6 @@ export default {
   },
 };
 </script>
-<style lang="stylus">
-.effect
-  width 100%
-  height 1.1rem
-  top 5%
-  position absolute
-  border-radius 1rem
-  padding 0
-  margin 0
-  background rgba(0,0,0,0.1)
-  animation fadeInOut 0.5s
-  text-align center
-  opacity 0
-  color white
-  text-shadow 0px 0px 2px black
-  box-shadow 0px 0px 2px black
-@keyframes fadeInOut {
-  from{
-    opacity 1
-  }
-  100%{
-    opacity 0
-  }
-}
-</style>
 <style lang="stylus" scoped>
 #playboard
   transform-style: preserve-3d;

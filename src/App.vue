@@ -5,6 +5,7 @@
       el-menu-item(index='/') Home
       el-menu-item(index='edit') Edit
       el-menu-item(index='play') Play
+      el-menu-item(index='form') Form
   router-view
 </template>
 <style lang="stylus">

@@ -1,9 +1,9 @@
 <template lang="pug">
 #Edit
   el-header
-  el-row(justify='center')
     el-button(@click='save()') save
     el-button(@click='get()') get
+  el-row(justify='center')
     el-col(:xl='16' :lg='20' :md='24')
       editboard(:musicData="musicData")
     
@@ -12,12 +12,12 @@
 export default {
   data() {
     return {
-      url: "",
       musicData: {
         title: "a",
         mapper: "z",
         bpm: 1,
         duration: 200,
+        difficulty: 1.5,
         origin_song: "f",
         youtube_id: "VyvhvlYvRnc",
         video_url: "a",
@@ -26,7 +26,7 @@ export default {
         love_count: 0,
         play_count: 0,
         view_count: 0,
-        mapData: [
+        map_data: [
           {
             key: "a",
             color: "rgb(200,10,15)",
@@ -72,7 +72,7 @@ export default {
   methods: {
     save() {
       this.axios
-        .post("http://localhost:4000" + "/save", this.musicData)
+        .post("http://localhost:4000" + "/data", ["music_data", this.musicData])
         .then((res) => {
           console.log(res.data);
         })
@@ -93,52 +93,6 @@ export default {
           console.log(error);
         });
     },
-    getInfo() {
-      const request = window.gapi.client.youtube.videos.list({
-        part: ["snippet,contentDetails,statistics"],
-        id: this.id,
-      });
-      const component = this;
-      request.execute(function (response) {
-        console.log(response);
-        response.items.map((item) => {
-          try {
-            if (!item.id.playlistId) {
-              component.musicData.id = item.id;
-              component.musicData.originSong = item.snippet.title;
-              component.musicData.url =
-                "https://www.youtube.com/embed/" + item.id;
-              component.musicData.producer = item.snippet.channelTitle;
-              component.musicData.src =
-                "http://img.youtube.com/vi/" + item.id + "/0.jpg";
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        });
-      });
-    },
-  },
-  computed: {
-    duration() {
-      var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
-      var hours = 0,
-        minutes = 0,
-        seconds = 0,
-        totalseconds;
-      if (reptms.exec("PT15M33S")) {
-        var matches = reptms.exec("PT15M33S");
-        if (matches[1]) hours = Number(matches[1]);
-        if (matches[2]) minutes = Number(matches[2]);
-        if (matches[3]) seconds = Number(matches[3]);
-        totalseconds = hours * 3600 + minutes * 60 + seconds;
-        return totalseconds;
-      }
-    },
-  },
-  mounted() {
-    gapi.client.load("youtube", "v3");
-    gapi.client.setApiKey(import.meta.env.VITE_YOUTUBE_API);
   },
 };
 </script>

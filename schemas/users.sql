@@ -1,0 +1,7 @@
+CREATE TABLE `music_game`.`users` (
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(20) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`create_time`, `id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);

@@ -1,9 +1,9 @@
 <template lang="pug">
 #playboard
   .toolBar(v-loading='loading')
-    el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
     el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
     el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
+    el-slider(v-model="viewDegree" :max='80' @change='setViewDegree()')
     p {{score}}
   .row(:style='playBoardStyle()')
     .player(v-loading="loading")
@@ -45,8 +45,8 @@ export default {
     getBpm() {
       return this.$store.getters.getBpm;
     },
-    getviewDegree() {
-      return this.$store.getters.getviewDegree;
+    getViewDegree() {
+      return this.$store.getters.getViewDegree;
     },
     judgeLine() {
       // [
@@ -187,6 +187,9 @@ export default {
     onPlayerStateChange(e) {
       this.playerState = e.data;
     },
+    setViewDegree() {
+      this.$store.commit("setViewDegree", this.viewDegree);
+    },
   },
   mounted() {
     this.viewDegree = this.getViewDegree;
@@ -234,10 +237,6 @@ export default {
     opacity 0.5
     height 100%
     width 100%
-  .slider
-    position absolute
-    top 5%
-    left 0
   .row
     flex-wrap nowrap
     width 100%

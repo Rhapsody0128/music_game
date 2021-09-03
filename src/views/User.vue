@@ -1,5 +1,5 @@
 <template lang="pug">
-#Home
+#User
   el-header
   el-main
     el-row

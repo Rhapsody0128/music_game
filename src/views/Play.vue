@@ -1,8 +1,6 @@
 <template lang="pug">
-#Edit
-  el-header
+#Play
   el-row(justify='center')
-    //- el-button(@click="test()")
     el-col(:xl='16' :lg='20' :md='24')
       playboard(:music_data="musicData")
 

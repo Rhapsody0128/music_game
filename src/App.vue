@@ -6,6 +6,7 @@
       el-menu-item(index='edit') Edit
       el-menu-item(index='play') Play
       el-menu-item(index='form') Form
+      el-menu-item(index='user') User
   router-view
 </template>
 <style lang="stylus">

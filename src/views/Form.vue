@@ -63,12 +63,17 @@
             playboard(v-if='drawer ' :music_data='music_data')
         el-button(type='primary' @click="confirm()") 確認
         el-button(type='danger' @click="previous()") 上一步
+    .fourStep(v-if='active==3')
+      el-result(icon='success' title='成功提示' subtitle='请根据提示进行操作')
+        template(#extra='')
+          el-button(type='primary' size='medium' @click='leave()') 回到個人頁面
   el-steps(:active='active' align-center finish-status='success')
       el-step(title='找到Youtube音樂')
       el-step(title='輸入你的歌曲資訊')
       el-step(title='編輯預設個人設定')
 </template>
 <script>
+import { h } from "vue";
 export default {
   data() {
     return {
@@ -100,6 +105,7 @@ export default {
         love_count: 0,
         play_count: 0,
         view_count: 0,
+        map_data: null,
       },
       rules: {
         title: [
@@ -239,7 +245,29 @@ export default {
       this.active--;
     },
     confirm() {
-      console.log(this.music_data);
+      this.axios
+        .post(import.meta.env.VITE_BACK_URL + "/data", [
+          "music_data",
+          this.music_data,
+        ])
+        .then((res) => {
+          console.log(res.data);
+          this.next();
+          this.$notify({
+            title: "Map Data",
+            message: h("i", { style: "color: teal" }, "已經創建一則音樂"),
+          });
+        })
+        .catch((error) => {
+          this.$notify({
+            title: "Map Data",
+            message: h("i", { style: "color: teal" }, "發生錯誤"),
+          });
+          console.log(error);
+        });
+    },
+    leave() {
+      this.$router.push({ name: "User" });
     },
   },
   mounted() {

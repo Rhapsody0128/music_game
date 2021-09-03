@@ -20,7 +20,7 @@
                   h4.marginTop 頻道: {{music_data.producer}}
                   h4.marginTop 時間: {{getTimeString}}
           el-col
-            el-button.marginTop(type='primary' @click="next()") 確認
+            el-button.marginTop(type='primary' @click="selectVideo()") 確認
       el-skeleton.marginTop(v-else :rows="5" animated)
     el-form.secondStep(v-if='active==1' :model='music_data' :rules='rules' ref='map_data' label-width='100px')
       h3 輸入你的音樂資訊:
@@ -58,12 +58,9 @@
               .word
                 el-button(@click="playAudio(data.audio)" icon='el-icon-video-play' )
       .row.marginTop
-        el-button(@click='drawer = true' type='primary' style='margin-left: 16px;')
-          | DEMO
-        el-drawer(title='DEMO' v-model='drawer' size='60%')
-          demoboard(v-if='drawer ' :music_data='music_data')
-
-      .row.marginTop
+        el-button(@click='drawer = true' type='success') DEMO
+          el-drawer(title='DEMO' v-model='drawer' size='60%')
+            playboard(v-if='drawer ' :music_data='music_data')
         el-button(type='primary' @click="confirm()") 確認
         el-button(type='danger' @click="previous()") 上一步
   el-steps(:active='active' align-center finish-status='success')
@@ -109,8 +106,8 @@ export default {
           { required: true, message: "請輸入標題", trigger: "blur" },
           {
             min: 1,
-            max: 30,
-            message: "長度請控制在30個字以內",
+            max: 100,
+            message: "長度請控制在100個字以內",
             trigger: "blur",
           },
         ],
@@ -168,13 +165,13 @@ export default {
       return result[1];
     },
     getDuration(duration) {
-      var reptms = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+      var rules = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
       var hours = 0,
         minutes = 0,
         seconds = 0,
         totalseconds;
-      if (reptms.exec(duration)) {
-        var matches = reptms.exec(duration);
+      if (rules.exec(duration)) {
+        var matches = rules.exec(duration);
         if (matches[1]) hours = Number(matches[1]);
         if (matches[2]) minutes = Number(matches[2]);
         if (matches[3]) seconds = Number(matches[3]);
@@ -215,7 +212,6 @@ export default {
           this.next();
           this.applySetting();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -231,6 +227,11 @@ export default {
       audio.src = "./audio/" + audioName + ".mp3";
       audio.play();
     },
+    selectVideo() {
+      this.music_data.title =
+        this.music_data.origin_song + " from " + this.music_data.mapper;
+      this.next();
+    },
     next() {
       this.active++;
     },
@@ -245,7 +246,7 @@ export default {
     gapi.client.load("youtube", "v3");
     gapi.client.setApiKey(import.meta.env.VITE_YOUTUBE_API);
     this.music_data.mapper = this.getUser.name;
-    this.music_data.mapper.id = this.getUser.id;
+    this.music_data.mapper_id = this.getUser.id;
   },
 };
 </script>

@@ -88,7 +88,6 @@ export default {
       if (this.playerState !== 2) {
         this.player.pauseVideo();
         this.currentTime = this.player.getCurrentTime();
-        console.log("pase" + this.currentTime);
         clearInterval(this.lifeTimer);
       }
     },
@@ -187,7 +186,6 @@ export default {
     },
     onPlayerStateChange(e) {
       this.playerState = e.data;
-      console.log(this.playerState);
     },
   },
   mounted() {

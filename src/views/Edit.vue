@@ -3,10 +3,7 @@
   el-header
     el-button(@click='save()') save
     el-button(@click='get()') get
-  el-row(justify='center')
-    el-col(:xl='16' :lg='20' :md='24')
-      editboard(:music_data="musicData")
-    
+    editboard(:origin_music_data="musicData")
 </template>
 <script>
 export default {
@@ -30,6 +27,7 @@ export default {
           {
             key: "A",
             color: "rgb(200,10,15)",
+            audio: "pianoA",
             timeStamp: [
               0.3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
               18, 19,
@@ -38,31 +36,37 @@ export default {
           {
             key: "s",
             color: "rgb(0,10,15)",
+            audio: "pianoB",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "d",
             color: "rgba(0,0,0,0.5)",
+            audio: "pianoC",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "f",
             color: "rgba(255,255,255,1)",
+            audio: "pianoD",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "4",
             color: "rgba(200,10,10,0.5)",
+            audio: "pianoE",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "5",
             color: "rgba(200,200,10,0.5)",
+            audio: "pianoF",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "6",
             color: "rgba(200,200,200,0.5)",
+            audio: "pianoG",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
           },
         ],

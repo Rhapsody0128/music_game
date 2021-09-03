@@ -10,7 +10,6 @@ import VueAxios from "vue-axios";
 import "./style.styl";
 
 import music_card from "./components/music_card.vue";
-import demoboard from "./components/demoboard.vue";
 import playboard from "./components/playboard.vue";
 import editboard from "./components/editboard.vue";
 import game_slider from "./components/game_slider.vue";
@@ -22,7 +21,6 @@ app.use(Vuex);
 app.use(ElementPlus);
 app.use(VueAxios, axios);
 app.component("music_card", music_card);
-app.component("demoboard", demoboard);
 app.component("playboard", playboard);
 app.component("editboard", editboard);
 app.component("game_slider", game_slider);

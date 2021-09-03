@@ -16,6 +16,7 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
         ],
         [
@@ -23,11 +24,13 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
           {
             key: "d",
             color: "#fcb711",
             audio: "pianoE",
+            timeStamp: [],
           },
         ],
         [
@@ -35,16 +38,19 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
           {
             key: "s",
             color: "#f37023",
             audio: "pianoD",
+            timeStamp: [],
           },
           {
             key: "d",
             color: "#fcb711",
             audio: "pianoE",
+            timeStamp: [],
           },
         ],
         [
@@ -52,21 +58,25 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
           {
             key: "s",
             color: "#f37023",
             audio: "pianoD",
+            timeStamp: [],
           },
           {
             key: "5",
             color: "#6561ac",
             audio: "pianoA",
+            timeStamp: [],
           },
           {
             key: "6",
             color: "#292526",
             audio: "pianoB",
+            timeStamp: [],
           },
         ],
         [
@@ -74,26 +84,31 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
           {
             key: "s",
             color: "#f37023",
             audio: "pianoD",
+            timeStamp: [],
           },
           {
             key: "4",
             color: "#0087d2",
             audio: "pianoG",
+            timeStamp: [],
           },
           {
             key: "5",
             color: "#6561ac",
             audio: "pianoA",
+            timeStamp: [],
           },
           {
             key: "6",
             color: "#292526",
             audio: "pianoB",
+            timeStamp: [],
           },
         ],
         [
@@ -101,31 +116,37 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
           {
             key: "s",
             color: "#f37023",
             audio: "pianoD",
+            timeStamp: [],
           },
           {
             key: "d",
             color: "#fcb711",
             audio: "pianoE",
+            timeStamp: [],
           },
           {
             key: "4",
             color: "#0087d2",
             audio: "pianoG",
+            timeStamp: [],
           },
           {
             key: "5",
             color: "#6561ac",
             audio: "pianoA",
+            timeStamp: [],
           },
           {
             key: "6",
             color: "#292526",
             audio: "pianoB",
+            timeStamp: [],
           },
         ],
         [
@@ -133,41 +154,48 @@ export default createStore({
             key: "a",
             color: "#cd004b",
             audio: "pianoC",
+            timeStamp: [],
           },
           {
             key: "s",
             color: "#f37023",
             audio: "pianoD",
+            timeStamp: [],
           },
           {
             key: "d",
             color: "#fcb711",
             audio: "pianoE",
+            timeStamp: [],
           },
           {
             key: "f",
             color: "#0eb24e",
             audio: "pianoF",
+            timeStamp: [],
           },
           {
             key: "4",
             color: "#0087d2",
             audio: "pianoG",
+            timeStamp: [],
           },
           {
             key: "5",
             color: "#6561ac",
             audio: "pianoA",
+            timeStamp: [],
           },
           {
             key: "6",
             color: "#292526",
             audio: "pianoB",
+            timeStamp: [],
           },
         ],
       ],
     },
-    SaveMapData: [],
+    mapData: null,
   },
   getters: {
     getMapData(state) {
@@ -183,7 +211,6 @@ export default createStore({
       return state.setting.mapSetting;
     },
     getUser(state) {
-      console.log(state.user);
       return state.user;
     },
   },
@@ -191,11 +218,20 @@ export default createStore({
     saveMapData(state, newMap) {
       state.mapData = newMap;
     },
+    clearMapData(state) {
+      state.mapData = null;
+    },
+    uploadMapData(state) {
+      state.mapData = null;
+    },
     setBpm(state, newBpm) {
       state.setting.bpm = newBpm;
+    },
+    setViewDegree(state, newViewDegree) {
+      state.setting.viewDegree = newViewDegree;
     },
   },
   actions: {},
   modules: {},
-  // plugins: [createPersistedState()],
+  plugins: [createPersistedState()],
 });

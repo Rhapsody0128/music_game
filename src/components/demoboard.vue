@@ -1,11 +1,11 @@
 <template lang="pug">
-#playboard
+#demoboard
   .toolBar(v-loading='loading')
     el-slider.slider(v-model="viewDegree" vertical height="10vh" :max='80')
     el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
     el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
     p {{score}}
-  .row(:style='playBoardStyle()')
+  .row(:style='demoboardStyle()')
     .player(v-loading="loading")
       #player
     .full-screen(v-for='(data,index) in music_data.map_data')
@@ -92,7 +92,7 @@ export default {
         clearInterval(this.lifeTimer);
       }
     },
-    playBoardStyle() {
+    demoboardStyle() {
       return {
         transform: `
         rotateX(${this.viewDegree}deg)
@@ -224,7 +224,7 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
-#playboard
+#demoboard
   transform-style: preserve-3d;
   position: relative;
   transition: transform 0.5s;
@@ -253,14 +253,13 @@ export default {
       box-shadow 0px 0px 1px rgba(0,0,0,1)
       height 100%
       overflow hidden
-      position relative
-      &:after
+      &:before
         width 100%
         height 1rem
         border-radius 1rem
         position absolute
-        left 0%
         top 80%
+        left 0%
         text-align center
         transition 0.5
         content ''

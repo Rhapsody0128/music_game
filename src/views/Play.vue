@@ -4,7 +4,7 @@
   el-row(justify='center')
     //- el-button(@click="test()")
     el-col(:xl='16' :lg='20' :md='24')
-      playboard(:musicData="musicData")
+      playboard(:music_data="musicData")
 
 
     
@@ -14,23 +14,24 @@ export default {
   data() {
     return {
       musicData: {
-        id: "VyvhvlYvRnc",
-        title: "",
-        url: "",
-        mapper: "",
-        src: "",
-        originSong: "",
-        producer: "",
-        difficulty: "",
+        title: "a",
+        mapper: "z",
         bpm: 1,
         duration: 200,
-        satisfaction: null,
-        playCount: null,
-        viewCount: null,
-        mapData: [
+        difficulty: 1.5,
+        origin_song: "f",
+        youtube_id: "VyvhvlYvRnc",
+        video_url: "a",
+        img_src: "c",
+        producer: "d",
+        love_count: 0,
+        play_count: 0,
+        view_count: 0,
+        map_data: [
           {
-            key: "a",
+            key: "A",
             color: "rgb(200,10,15)",
+            audio: "pianoA",
             timeStamp: [
               0.3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
               18, 19,
@@ -39,31 +40,37 @@ export default {
           {
             key: "s",
             color: "rgb(0,10,15)",
+            audio: "pianoB",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "d",
             color: "rgba(0,0,0,0.5)",
+            audio: "pianoC",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "f",
             color: "rgba(255,255,255,1)",
+            audio: "pianoD",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "4",
             color: "rgba(200,10,10,0.5)",
+            audio: "pianoE",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "5",
             color: "rgba(200,200,10,0.5)",
+            audio: "pianoF",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "6",
             color: "rgba(200,200,200,0.5)",
+            audio: "pianoG",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
           },
         ],

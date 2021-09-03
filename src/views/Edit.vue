@@ -5,7 +5,7 @@
     el-button(@click='get()') get
   el-row(justify='center')
     el-col(:xl='16' :lg='20' :md='24')
-      editboard(:musicData="musicData")
+      editboard(:music_data="musicData")
     
 </template>
 <script>
@@ -28,7 +28,7 @@ export default {
         view_count: 0,
         map_data: [
           {
-            key: "a",
+            key: "A",
             color: "rgb(200,10,15)",
             timeStamp: [
               0.3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,

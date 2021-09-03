@@ -5,19 +5,19 @@
     el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
     el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
     el-button(@click="saveMapData()" plain icon='el-icon-finished' round type="warning") Save
-  el-slider(v-model="currentTime" height="300" :max='musicData.duration' show-input @input="seekTo()" @change="seekToConfirm()")
+  el-slider(v-model="currentTime" height="300" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()")
   .row(:style='playBoardStyle()')
     .player
       #player(v-loading="loading")
     .full-screen(v-for='(data,index) in getMapData')
       .screen(:id="'S'+data.key")
-      el-button.button.shadow(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color)" :id="'B'+data.key") {{data.key}}
+      el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
 import { h } from "vue";
 export default {
   props: {
-    musicData: Object,
+    music_data: Object,
   },
   data() {
     return {
@@ -121,7 +121,7 @@ export default {
       const screen = document.getElementById("S" + key);
       const effect = document.createElement("div");
       effect.appendChild(document.createTextNode(`perfect`));
-      effect.classList.add("effect");
+      effect.classList.add("perfectEffect");
       effect.style.top = "80%";
       effect.style.background = color;
       screen.appendChild(effect);
@@ -145,7 +145,7 @@ export default {
 
   mounted() {
     this.player = new YT.Player("player", {
-      videoId: this.musicData.id,
+      videoId: this.music_data.id,
       width: "100%",
       height: "100%",
       playerVars: {
@@ -162,8 +162,9 @@ export default {
   created() {
     const component = this;
     document.onkeydown = function (event) {
-      component.musicData.mapData.map((data) => {
-        if (data.key === event.key) {
+      component.music_data.map_data.map((data) => {
+        if (data.key.toLowerCase() === event.key.toLowerCase()) {
+          console.log(data.key);
           const button = document.getElementById("B" + data.key);
           button.click();
           button.classList.add("show");
@@ -212,6 +213,7 @@ export default {
         border-radius 1rem
         position absolute
         top 80%
+        left 0%
         text-align center
         transition 0.5
         content ''

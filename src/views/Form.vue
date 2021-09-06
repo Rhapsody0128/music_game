@@ -54,7 +54,10 @@
                 el-color-picker(v-model='data.color' size="mini")
             .audio
               el-select.select(v-model='data.audio')
-                el-option(v-for='item in audio' :key='item' :label='item' :value='item')
+                //- el-option(v-for='item in audio' :key='item' :label='item' :value='item')
+                el-option-group(v-for='group in audio' :key='group.label' :label='group.label')
+                  el-option(v-for='item in group.options' :key='item' :value='item')
+
               .word
                 el-button(@click="playAudio(data.audio)" icon='el-icon-video-play' )
       .row.marginTop
@@ -78,16 +81,39 @@ export default {
   data() {
     return {
       drawer: false,
-      active: 0,
+      active: 1,
       searchValue: "",
       audio: [
-        "pianoC",
-        "pianoD",
-        "pianoE",
-        "pianoF",
-        "pianoG",
-        "pianoA",
-        "pianoB",
+        {
+          options: ["mute"],
+        },
+        {
+          label: "樂器",
+          options: [
+            "pianoC",
+            "pianoD",
+            "pianoE",
+            "pianoF",
+            "pianoG",
+            "pianoA",
+            "pianoB",
+            "drum",
+            "small_drum",
+            "Japanese_drum",
+          ],
+        },
+        {
+          label: "其他",
+          options: [
+            "cracker",
+            "laser",
+            "stabbing",
+            "short_punch",
+            "sh_pickup",
+            "pushing_a_key",
+            "cat_like",
+          ],
+        },
       ],
       music_data: {
         title: null,
@@ -140,6 +166,9 @@ export default {
         sec = "0" + sec;
       }
       return min + "分" + sec + "秒";
+    },
+    getVolum() {
+      return this.$store.getters.getVolum;
     },
     getUser() {
       return this.$store.getters.getUser;
@@ -229,9 +258,12 @@ export default {
       this.$refs[formName].resetFields();
     },
     playAudio(audioName) {
-      let audio = new Audio();
-      audio.src = "./audio/" + audioName + ".mp3";
-      audio.play();
+      if (audioName !== "mute") {
+        let audio = new Audio();
+        audio.volume = this.getVolum;
+        audio.src = "./audio/" + audioName + ".mp3";
+        audio.play();
+      }
     },
     selectVideo() {
       this.music_data.title =

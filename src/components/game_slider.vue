@@ -13,6 +13,10 @@ export default {
     color: String,
     bornTime: Number,
     currentTime: Number,
+    restart: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     gameSliderStyle() {
@@ -52,6 +56,11 @@ export default {
   methods: {
     destroy() {
       this.break = true;
+    },
+  },
+  watch: {
+    restart() {
+      this.break = false;
     },
   },
 };

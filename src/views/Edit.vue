@@ -9,16 +9,17 @@
         el-button(@click="clearMapData()" plain icon='el-icon-delete' round type="danger") Clear
         el-button(@click="uploadMapData()" plain icon='el-icon-upload' round type="success") Upload
         el-button(@click='drawer = true' plain icon='el-icon-view' round type="info") DEMO
-          el-drawer(title='DEMO' v-model='drawer' size='60%')
-            playboard(v-if='drawer' :music_data='music_data')
+          el-drawer(title='DEMO' v-model='drawer' size='80%')
+            playboard(v-if='drawer' :music_data='music_data' :showProgressBar='true')
         el-slider(v-model="currentTime" height="300" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()")
-        el-slider(v-model="viewDegree" :max='80' @change='setViewDegree()')
-      .row(:style='editBoardStyle()')
-        .player
-          #player(v-loading="loading")
-        .full-screen(v-for='(data,index) in music_data.map_data')
-          .screen(:id="'S'+data.key")
-          el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio)" :id="'B'+data.key") {{data.key}}
+        el-slider(v-model="viewDegree" :max='60' @change='setViewDegree()')
+      .row
+        .col(:style='editBoardStyle()')
+          .player
+            #player(v-loading="loading")
+          .full-screen(v-for='(data,index) in music_data.map_data')
+            .screen(:id="'S'+data.key")
+            el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
 import { h } from "vue";
@@ -43,40 +44,44 @@ export default {
           {
             key: "A",
             color: "rgb(200,10,15)",
-            timeStamp: [
-              0.3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-              18, 19,
-            ],
+            audio: "cracker",
+            timeStamp: [],
           },
           {
             key: "s",
             color: "rgb(0,10,15)",
-            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+            audio: "cracker",
+            timeStamp: [],
           },
           {
             key: "d",
             color: "rgba(0,0,0,0.5)",
-            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+            audio: "cracker",
+            timeStamp: [],
           },
           {
             key: "f",
             color: "rgba(255,255,255,1)",
-            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+            audio: "cracker",
+            timeStamp: [],
           },
           {
             key: "4",
             color: "rgba(200,10,10,0.5)",
-            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+            audio: "cracker",
+            timeStamp: [],
           },
           {
             key: "5",
             color: "rgba(200,200,10,0.5)",
-            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
+            audio: "cracker",
+            timeStamp: [],
           },
           {
             key: "6",
             color: "rgba(200,200,200,0.5)",
-            timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
+            audio: "cracker",
+            timeStamp: [],
           },
         ],
       },
@@ -96,6 +101,9 @@ export default {
     getViewDegree() {
       return this.$store.getters.getViewDegree;
     },
+    getVolum() {
+      return this.$store.getters.getVolum;
+    },
   },
   methods: {
     gameStart() {
@@ -103,9 +111,9 @@ export default {
       this.player.playVideo();
       this.lifeTimer = setInterval(() => {
         if (this.playerState === 1) {
-          this.currentTime += 0.05;
+          this.currentTime += 0.015;
         }
-      }, 50);
+      }, 15);
     },
     gamePause() {
       this.player.pauseVideo();
@@ -125,9 +133,12 @@ export default {
     },
     hit(key, color, audioName) {
       if (this.playerState === 1) {
-        let audio = new Audio();
-        audio.src = "./audio/" + audioName + ".mp3";
-        audio.play();
+        if (audioName !== "mute") {
+          let audio = new Audio();
+          audio.volume = this.getVolum;
+          audio.src = "./audio/" + audioName + ".mp3";
+          audio.play();
+        }
         this.appendEffect(key, color);
         this.judge();
         this.editMap(key, this.player.getCurrentTime());
@@ -265,6 +276,11 @@ export default {
     height 100%
     transform-style: preserve-3d
     perspective: 30rem
+    .col
+      flex-wrap nowrap
+      width 100%
+      display flex
+      height 100%
   .full-screen
     height 70vh
     width 100%

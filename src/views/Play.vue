@@ -2,10 +2,7 @@
 #Play
   el-row(justify='center')
     el-col(:xl='16' :lg='20' :md='24')
-      playboard(:music_data="musicData")
-
-
-    
+      playboard(:music_data="musicData" )
 </template>
 <script>
 export default {
@@ -38,37 +35,37 @@ export default {
           {
             key: "s",
             color: "rgb(0,10,15)",
-            audio: "pianoB",
+            audio: "pianoA",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "d",
             color: "rgba(0,0,0,0.5)",
-            audio: "pianoC",
+            audio: "pianoA",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "f",
             color: "rgba(255,255,255,1)",
-            audio: "pianoD",
+            audio: "pianoA",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "4",
             color: "rgba(200,10,10,0.5)",
-            audio: "pianoE",
+            audio: "pianoA",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "5",
             color: "rgba(200,200,10,0.5)",
-            audio: "pianoF",
+            audio: "pianoA",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45],
           },
           {
             key: "6",
             color: "rgba(200,200,200,0.5)",
-            audio: "pianoG",
+            audio: "pianoA",
             timeStamp: [0.3, 0.8, 0.9, 1.2, 1.45, 0.3, 0.8, 0.9, 1.2, 1.45],
           },
         ],
@@ -83,7 +80,6 @@ export default {
       });
       const component = this;
       request.execute(function (response) {
-        console.log(response);
         response.items.map((item) => {
           try {
             if (!item.id.playlistId) {

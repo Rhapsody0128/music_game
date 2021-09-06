@@ -3,12 +3,14 @@
   .toolBar(v-loading='loading')
     el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
     el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
-    el-slider(v-model="viewDegree" :max='80' @change='setViewDegree()')
+    el-button(@click="gameRestart()" icon='el-icon-refresh-left' round type="warning") Restart
+    el-slider(v-model="currentTime" height="300" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()")
+    el-slider(v-model="viewDegree" :max='80' @change='setViewDegree()' v-if='showProgressBar')
     p {{score}}
   .row(:style='playBoardStyle()')
     .player(v-loading="loading")
       #player
-    .full-screen(v-for='(data,index) in music_data.map_data')
+    .full-screen(v-for='(data,index) in music_data.map_data' )
       .screen(:id="'S'+data.key")
         game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 
                     :class="data.key" 
@@ -16,6 +18,7 @@
                     :bornTime="timeStamp" 
                     :currentTime='currentTime'
                     :bpm="getBpm"
+                    :restart='restart'
                     )
       el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio)" :id="'B'+data.key") {{data.key}}
 </template>
@@ -23,6 +26,10 @@
 export default {
   props: {
     music_data: Object,
+    showProgressBar: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -36,6 +43,7 @@ export default {
       maxCombo: 0,
       lifeTimer: null,
       playerState: 0,
+      restart: false,
     };
   },
   computed: {
@@ -47,6 +55,9 @@ export default {
     },
     getViewDegree() {
       return this.$store.getters.getViewDegree;
+    },
+    getVolum() {
+      return this.$store.getters.getVolum;
     },
     judgeLine() {
       // [
@@ -76,8 +87,8 @@ export default {
   },
   methods: {
     gameStart() {
+      this.restart = false;
       this.player.playVideo();
-      this.currentTime = this.player.getCurrentTime();
       this.lifeTimer = setInterval(() => {
         if (this.playerState === 1) {
           this.currentTime += 0.015;
@@ -85,11 +96,15 @@ export default {
       }, 15);
     },
     gamePause() {
-      if (this.playerState !== 2) {
-        this.player.pauseVideo();
-        this.currentTime = this.player.getCurrentTime();
-        clearInterval(this.lifeTimer);
-      }
+      this.player.pauseVideo();
+      clearInterval(this.lifeTimer);
+    },
+    gameRestart() {
+      this.restart = true;
+      this.currentTime = 0;
+      this.player.seekTo(this.currentTime);
+      this.gamePause();
+      (this.score = 0), (this.combo = 0), (this.maxCombo = 0);
     },
     playBoardStyle() {
       return {
@@ -104,13 +119,18 @@ export default {
       };
     },
     hit(key, color, audioName) {
-      const sliders = document.getElementsByClassName(key);
-      let audio = new Audio();
-      audio.src = "./audio/" + audioName + ".mp3";
-      audio.play();
-      if (sliders.length > 0) {
-        this.appendEffect(key, sliders[0].style.top, color);
-        sliders[0].click();
+      if (this.playerState === 1) {
+        const sliders = document.getElementsByClassName(key);
+        if (audioName !== "mute") {
+          let audio = new Audio();
+          audio.volume = this.getVolum;
+          audio.src = "./audio/" + audioName + ".mp3";
+          audio.play();
+        }
+        if (sliders.length > 0) {
+          this.appendEffect(key, sliders[0].style.top, color);
+          sliders[0].click();
+        }
       }
     },
     judge(position) {
@@ -179,6 +199,18 @@ export default {
     },
     destroy() {
       this.$emit("destroy");
+    },
+    seekTo() {
+      if (this.playerState !== 1) {
+        this.gamePause();
+        this.restart = true;
+        this.player.seekTo(this.currentTime);
+      }
+    },
+    seekToConfirm() {
+      this.gamePause();
+      this.restart = true;
+      this.player.seekTo(this.currentTime);
     },
     onPlayerReady(event) {
       this.loading = false;

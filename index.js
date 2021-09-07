@@ -37,16 +37,32 @@ app.use(cors({
   credentials: true
 }))
 
-var conn = mysql.createConnection({
+
+var conn
+
+function handleDisconnect() {
+  conn = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database:process.env.DB_DATEBASE,
-});
-conn.connect(function(err){
-  if(err) throw err;
-  console.log('connect success!');
+  });  
+  conn.connect( function onConnect(err) {   
+    if (err) { 
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 10000);
+    }
   });
+  conn.on('error', function onError(err) {
+    console.log('db error', err);
+    if (err.code == 'PROTOCOL_CONNECTION_LOST') {
+      handleDisconnect(); 
+    } else {
+      throw err;
+    }
+  });
+}
+
   // 其他的資料庫操作，位置預留
   // 關閉連線時呼叫
 
@@ -76,32 +92,32 @@ conn.connect(function(err){
 
 // createData('music_data',req.body)
 
-    app.post('/data',async(req,res)=>{
-      conn.query(createData(req.body[0],req.body[1]), function(err, result, fields){
-        if(err) throw err;
-        res.send('insert success')
-        console.log('success');
-      });
-    })
-    app.post('/',async(req,res)=>{
-      console.log('sussess');
-    })
+  app.post('/data',async(req,res)=>{
+    conn.query(createData(req.body[0],req.body[1]), function(err, result, fields){
+      if(err) throw err;
+      res.send('insert success')
+      console.log('success');
+    });
+  })
 
-    app.get('/data',async(req,res)=>{
-      conn.query('select * from music_data', function(err, result, fields){
-        if(err) throw err;
-        console.log(result);
-        res.send(result)
-        console.log('success');
-      });
-    })
+  app.post('/',async(req,res)=>{
+    console.log('sussess');
+  })
 
-    app.listen(process.env.PORT, () => {
-      console.log('網頁伺服器已啟動')
-      console.log('http://localhost:'+process.env.PORT);
-    })
+  app.get('/data',async(req,res)=>{
+    conn.query('select * from music_data', function(err, result, fields){
+      if(err) throw err;
+      console.log(result);
+      res.send(result)
+      console.log('success');
+    });
+  })
 
-// conn.end(function(err){
-// if(err) throw err;
-// console.log('connect end');
-// })
+  app.listen(process.env.PORT, () => {
+    console.log('網頁伺服器已啟動')
+    console.log('http://localhost:'+process.env.PORT);
+  })
+
+
+
+  handleDisconnect()

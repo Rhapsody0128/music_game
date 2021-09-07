@@ -3,6 +3,7 @@
   "name": "music_game_back_end",
   "version": "1.0.0",
   "scripts": {
+    "start":"node index.js",
     "dev": "node index.js"
   },
   "main": "index.js",

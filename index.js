@@ -84,6 +84,9 @@ conn.connect(function(err){
         console.log('success');
       });
     })
+    app.post('/',async(req,res)=>{
+      console.log('sussess');
+    })
 
     app.get('/data',async(req,res)=>{
       conn.query('select * from music_data', function(err, result, fields){

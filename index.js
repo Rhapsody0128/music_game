@@ -80,6 +80,14 @@ function handleDisconnect() {
     });
   })
 
+  app.put('/music_data',async(req,res)=>{
+    conn.query(getData('music_data',req.body.body.data,req.body.query), function(err, result, fields){
+      if(err) throw err;
+      res.send(result)
+      console.log('get success');
+    });
+  })
+
   app.listen(process.env.PORT, () => {
     console.log('網頁伺服器已啟動')
     console.log('http://localhost:'+process.env.PORT);

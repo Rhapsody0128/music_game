@@ -59,7 +59,7 @@
   }
 
   var updateData = (dataSheet,data,query) =>{
-    let key = Object.keys(query)
+    let queryKey = Object.keys(query)
     let fieldKeys = Object.keys(data)
     let setStr = ''
     let queryStr = ''
@@ -75,17 +75,17 @@
       }else{
         valueStr = `${data[key]}`
       }
-      setStr += `valueStr ,`
+      setStr += `${valueStr} ,`
     }
     setStr = setStr.slice(0, -2)
     
-    if(query[key] == undefined){
+    if(query[queryKey] == undefined){
       queryStr = ''
     } else{
-      if(typeof(query[key])==='string'){
-        queryStr = `where ${key} = '${query[key]}'`
+      if(typeof(query[queryKey])==='string'){
+        queryStr = `where ${queryKey} = '${query[queryKey]}'`
       }else{
-        queryStr = `where ${key} = ${query[key]}`
+        queryStr = `where ${queryKey} = ${query[queryKey]}`
       }
     }
     result = result += setStr += queryStr

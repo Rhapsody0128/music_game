@@ -2,7 +2,7 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import {createData, getData} from'./mySqlScript.js'
+import {createData, getData,updateData} from'./mySqlScript.js'
 
 import mysql from 'mysql'
 
@@ -13,6 +13,7 @@ const app = express()
 
 app.use(express.static('public'))
 app.use(express.static('files'))
+app.use(bodyParser.json())
 
 app.use(cors({
   origin (origin, callback) {
@@ -80,8 +81,9 @@ function handleDisconnect() {
     });
   })
 
-  app.put('/music_data',async(req,res)=>{
-    conn.query(getData('music_data',req.body.body.data,req.body.query), function(err, result, fields){
+  app.patch('/music_data',async(req,res)=>{
+    console.log(req.body);
+    conn.query(updateData('music_data',req.body.data,req.body.query), function(err, result, fields){
       if(err) throw err;
       res.send(result)
       console.log('get success');

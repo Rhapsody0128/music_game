@@ -71,6 +71,7 @@
   }
 
   var deleteData = (dataSheet,query) =>{
+
     let key = Object.keys(query)
     let result = `delete from ${dataSheet} `
     let queryStr = ''

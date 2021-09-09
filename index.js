@@ -2,7 +2,7 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import {createData, getData,updateData} from'./mySqlScript.js'
+import {createData, getData,updateData,deleteData} from'./mySqlScript.js'
 
 import mysql from 'mysql'
 
@@ -21,7 +21,6 @@ app.use(cors({
     if (origin === undefined) {
       callback(null, true)
     } else {
-      console.log(process.env.ALLOW_CORS)
       if (process.env.ALLOW_CORS === 'true') {
         // 開發環境，允許
         callback(null, true)
@@ -101,6 +100,7 @@ function handleDisconnect() {
   
   app.delete('/music_data',async(req,res)=>{
     try {
+      console.log(req);
       conn.query(deleteData('music_data',req.query), function(err, result, fields){
         res.send(result)
         console.log('delete success');

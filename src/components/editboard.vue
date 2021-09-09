@@ -1,97 +1,56 @@
 <template lang="pug">
-#playboard
+#editboard
   .toolBar
     el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
-    el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
-    el-button(@click="gameRestart()" icon='el-icon-refresh-left' round type="warning") Restart
+    el-button(@click="gamePause()" icon='el-icon-video-pause' round :disabled='playerState!=1') Pause
+    el-button(@click="saveMapData()" plain icon='el-icon-finished' round type="warning") Save
+    el-button(@click="clearMapData()" plain icon='el-icon-delete' round type="danger") Clear
+    el-button(@click="uploadMapData()" plain icon='el-icon-upload' round type="success") Upload
+    el-button(@click='openDrawer()' plain icon='el-icon-view' round type="info") DEMO
+      el-drawer(title='DEMO' v-model='drawer' size='80%')
+        playboard(v-if='drawer' :music_data='music_data' :showProgressBar='true')
     el-button(round type="info") 
       el-slider(v-model="viewDegree" height="10px" vertical :max='80' @change='setViewDegree()')
-    el-slider(v-model="currentTime" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()" v-if="showProgressBar") 
-    br
-    span 分數:{{score}} 分  
-    span |   Combo:{{combo}} 次
-  .row(:style='playBoardStyle()')
-    .player
-      #player
-    .full-screen(v-for='(data,index) in music_data.map_data' )
-      .screen(:id="'S'+data.key")
-        game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 
-                    :class="data.key" 
-                    :color='data.color' 
-                    :bornTime="timeStamp" 
-                    :currentTime='currentTime'
-                    :bpm="getBpm"
-                    :restart='restart'
-                    )
-      el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio)" :id="'B'+data.key") {{data.key}}
+    el-slider(v-model="currentTime" height="300" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()")
+  .row
+    .col(:style='editBoardStyle()')
+      .player
+        #player
+      .full-screen(v-for='(data,index) in music_data.map_data')
+        .screen(:id="'S'+data.key")
+        el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio,index)" :id="'B'+data.key") {{data.key}}
 </template>
 <script>
+import { h } from "vue";
 export default {
   props: {
     music_data: Object,
-    showProgressBar: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
+      drawer: false,
+      loading: true,
       viewDegree: 0,
       currentTime: null,
       choiceTime: null,
       player: null,
       score: 0,
       combo: 0,
-      maxCombo: 0,
       lifeTimer: null,
       playerState: 0,
-      restart: false,
       watchData: [],
     };
   },
   computed: {
-    getMapData() {
-      return this.$store.getters.getMapData;
-    },
-    getBpm() {
-      return this.music_data.bpm;
-      // return this.$store.getters.getBpm;
-    },
     getViewDegree() {
       return this.$store.getters.getViewDegree;
     },
     getVolum() {
       return this.$store.getters.getVolum;
     },
-    judgeLine() {
-      // [
-      //   perfectLineStart,
-      //   perfectLineEnd,
-      //   ellectLineStart,
-      //   ellectLineEnd,
-      //   goodLineStart,
-      //   goodLineEnd,
-      // ];
-      if (this.getBpm === 1) {
-        return [80.25, 79.75, 82, 75, 85, 70];
-      }
-      if (this.getBpm === 1.5) {
-        return [80.5, 78.5, 83, 74, 85, 68];
-      }
-      if (this.getBpm === 2) {
-        return [81, 78, 84, 73, 89, 66];
-      }
-      if (this.getBpm === 0.5) {
-        return [79.8, 79.2, 82, 76, 84, 72];
-      }
-      if (this.getBpm === 0.25) {
-        return [79.6, 79.4, 81, 78, 83, 75];
-      }
-    },
   },
   methods: {
     gameStart() {
-      this.restart = false;
       this.player.playVideo();
       this.lifeTimer = setInterval(() => {
         if (this.playerState === 1) {
@@ -103,14 +62,7 @@ export default {
       this.player.pauseVideo();
       clearInterval(this.lifeTimer);
     },
-    gameRestart() {
-      this.restart = true;
-      this.currentTime = 0;
-      this.player.seekTo(this.currentTime);
-      this.gamePause();
-      (this.score = 0), (this.combo = 0), (this.maxCombo = 0);
-    },
-    playBoardStyle() {
+    editBoardStyle() {
       return {
         transform: `
         rotateX(${this.viewDegree}deg)
@@ -122,73 +74,33 @@ export default {
         background: color,
       };
     },
-    hit(key, color, audioName) {
+    openDrawer() {
+      this.drawer = true;
+      this.gamePause();
+    },
+    hit(key, color, audioName, index) {
       if (this.playerState === 1) {
-        const sliders = document.getElementsByClassName(key);
         if (audioName !== "mute") {
           let audio = new Audio();
           audio.volume = this.getVolum;
           audio.src = "./audio/" + audioName + ".mp3";
           audio.play();
         }
-        if (sliders.length > 0) {
-          let top = parseInt(sliders[0].style.top);
-          if (top > 50) {
-            this.appendEffect(key, top, color);
-            sliders[0].click();
-          }
-        }
+        this.watchData[index].button.classList.add("show");
+        this.appendEffect(key, color);
+        this.judge();
+        this.editMap(index, this.player.getCurrentTime());
       }
     },
     keydown(index, keydown) {
       if (keydown) {
         this.watchData[index].button.click();
-        this.watchData[index].button.classList.add("show");
       } else {
         this.watchData[index].button.classList.remove("show");
       }
     },
-    judge(position) {
-      var word = "";
-      if (this.judgeLine[0] >= position && position >= this.judgeLine[1]) {
-        this.score += 100;
-        this.combo++;
-        word = "perfect";
-      } else if (
-        (this.judgeLine[2] >= position && position >= this.judgeLine[0]) ||
-        (this.judgeLine[1] >= position && position >= this.judgeLine[3])
-      ) {
-        this.score += 30;
-        this.combo++;
-        word = "excellent";
-      } else if (
-        (this.judgeLine[4] >= position && position >= this.judgeLine[2]) ||
-        (this.judgeLine[3] >= position && position >= this.judgeLine[5])
-      ) {
-        this.score += 10;
-        this.combo++;
-        word = "good";
-      } else {
-        this.combo = 0;
-        word = "miss";
-      }
-
-      if (this.combo > 10 && this.combo <= 30) {
-        this.score += 5;
-      } else if (this.combo > 30 && this.combo <= 50) {
-        this.score += 10;
-      } else if (this.combo > 50 && this.combo <= 100) {
-        this.score += 25;
-      } else if (this.combo > 100 && this.combo <= 200) {
-        this.score += 35;
-      } else if (this.combo > 200) {
-        this.score += 50;
-      }
-
-      if (this.combo > this.maxCombo) {
-        this.maxCombo = this.combo;
-      }
-      return word;
+    editMap(index, currentTime) {
+      this.music_data.map_data[index].timeStamp.push(currentTime);
     },
     init() {
       this.viewDegree = this.getViewDegree;
@@ -200,7 +112,7 @@ export default {
         });
       });
       const component = this;
-      window.onkeydown = function (keydownEvent) {
+      document.onkeydown = function (keydownEvent) {
         component.music_data.map_data.map((data) => {
           if (data.key.toLowerCase() === keydownEvent.key.toLowerCase()) {
             let index = component.music_data.map_data.indexOf(data);
@@ -208,7 +120,7 @@ export default {
           }
         });
       };
-      window.onkeyup = function (keydownEvent) {
+      document.onkeyup = function (keydownEvent) {
         component.music_data.map_data.map((data) => {
           if (data.key.toLowerCase() === keydownEvent.key.toLowerCase()) {
             let index = component.music_data.map_data.indexOf(data);
@@ -217,61 +129,97 @@ export default {
         });
       };
     },
-    appendEffect(key, position, color) {
+    saveMapData() {
+      this.music_data.map_data.forEach((data) => {
+        data.timeStamp.sort();
+      });
+      this.$store.commit("saveMapData", this.music_data.map_data);
+      this.$notify({
+        title: "Map Data",
+        message: h("i", { style: "color: teal" }, "已儲存資料"),
+      });
+    },
+    clearMapData() {
+      this.$store.commit("clearMapData");
+      this.music_data.map_data.forEach((data) => {
+        data.timeStamp = [];
+      });
+      this.$notify({
+        title: "Map Data",
+        message: h("i", { style: "color: teal" }, "已清空資料"),
+      });
+    },
+    uploadMapData() {
+      this.$store.commit("uploadMapData");
+      this.axios
+        .patch(import.meta.env.VITE_BACK_URL + "/music_data", {
+          data: {
+            map_data: this.music_data.map_data,
+          },
+          query: {
+            id: this.music_data.id,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          this.$notify({
+            title: "Map Data",
+            message: h("i", { style: "color: teal" }, "已上傳資料"),
+          });
+        })
+        .catch((error) => {
+          this.$notify({
+            title: "Map Data",
+            message: h("i", { style: "color: teal" }, `${error}`),
+          });
+          console.log(error);
+        });
+    },
+    setViewDegree() {
+      this.$store.commit("setViewDegree", this.viewDegree);
+    },
+    judge() {
+      this.score += 100;
+      this.combo++;
+      if (this.combo > 10 && this.combo <= 30) {
+        this.score += 5;
+      } else if (this.combo > 30 && this.combo <= 50) {
+        this.score += 10;
+      } else if (this.combo > 50 && this.combo <= 100) {
+        this.score += 25;
+      } else if (this.combo > 100 && this.combo <= 200) {
+        this.score += 35;
+      } else if (this.combo > 200) {
+        this.score += 50;
+      }
+    },
+    appendEffect(key, color) {
       const screen = document.getElementById("S" + key);
       const effect = document.createElement("div");
-      let judgeWord = this.judge(position);
-      effect.appendChild(document.createTextNode(`${judgeWord}`));
-      screen.appendChild(effect);
-      if (judgeWord === "perfect") {
-        effect.classList.add("perfectEffect");
-      } else if (judgeWord === "excellent") {
-        effect.classList.add("excellentEffect");
-      } else if (judgeWord === "good") {
-        effect.classList.add("goodEffect");
-      } else {
-        effect.classList.add("effect");
-      }
-      effect.style.top = position + "%";
+      effect.appendChild(document.createTextNode(`perfect`));
+      effect.classList.add("perfectEffect");
+      effect.style.top = "80%";
       effect.style.background = color;
-    },
-    destroy() {
-      this.$emit("destroy");
+      screen.appendChild(effect);
     },
     seekTo() {
       if (this.playerState !== 1) {
-        this.gamePause();
-        this.restart = true;
         this.player.seekTo(this.currentTime);
+        this.gamePause();
       }
     },
     seekToConfirm() {
-      this.gamePause();
-      this.restart = true;
       this.player.seekTo(this.currentTime);
+      this.gamePause();
     },
-    onPlayerReady(event) {
+    onPlayerReady() {
       this.player.setPlaybackQuality("medium");
     },
     onPlayerStateChange(e) {
       this.playerState = e.data;
     },
-    setViewDegree() {
-      this.$store.commit("setViewDegree", this.viewDegree);
-    },
-    over() {
-      this.$alert(
-        `恭喜完成${this.music_data.title}
-        你獲得${this.score}分!
-        最高COMBO${this.maxCombo}次
-        `,
-        "過關",
-        {
-          confirmButtonText: "確定",
-        }
-      );
-    },
   },
+
   mounted() {
     this.player = new YT.Player("player", {
       videoId: this.music_data.youtube_id,
@@ -286,6 +234,22 @@ export default {
         onStateChange: this.onPlayerStateChange,
       },
     });
+    this.axios
+      .get(import.meta.env.VITE_BACK_URL + "/music_data", {
+        params: {
+          id: this.$route.query.id,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        this.music_data = res.data[0];
+        this.music_data.map_data = JSON.parse(res.data[0].map_data);
+        this.start = true;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     this.init();
   },
   watch: {
@@ -335,19 +299,19 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
-#playboard
-  transform-style: preserve-3d;
-  position: relative;
-  transition: transform 0.5s;
-  perspective: 30rem;
-  width 100%
-  margin-top 5%
+#Edit
   .player
     position absolute
     opacity 0.5
     height 100%
     width 100%
   .row
+    flex-wrap nowrap
+    width 100%
+    display flex
+    transform-style: preserve-3d
+    perspective: 30rem
+  .col
     flex-wrap nowrap
     width 100%
     display flex
@@ -360,14 +324,13 @@ export default {
       box-shadow 0px 0px 1px rgba(0,0,0,1)
       height 100%
       overflow hidden
-      position relative
       &:after
         width 100%
         height 1rem
         border-radius 1rem
         position absolute
-        left 0%
         top 80%
+        left 0%
         text-align center
         transition 0.5
         content ''
@@ -398,7 +361,6 @@ export default {
     .show
       opacity 1
       height 5rem
-  .toolBar
-    padding-left 1rem
-    padding-right 1rem
+  .marginTop
+    margin-top 1rem
 </style>

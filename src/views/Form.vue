@@ -54,16 +54,14 @@
                 el-color-picker(v-model='data.color' size="mini")
             .audio
               el-select.select(v-model='data.audio')
-                //- el-option(v-for='item in audio' :key='item' :label='item' :value='item')
                 el-option-group(v-for='group in audio' :key='group.label' :label='group.label')
                   el-option(v-for='item in group.options' :key='item' :value='item')
-
               .word
                 el-button(@click="playAudio(data.audio)" icon='el-icon-video-play' )
       .row.marginTop
         el-button(@click='drawer = true' type='success') DEMO
           el-drawer(title='DEMO' v-model='drawer' size='60%')
-            playboard(v-if='drawer ' :music_data='music_data')
+            playboard(v-if='drawer = true' :music_data='music_data')
         el-button(type='primary' @click="confirm()") 確認
         el-button(type='danger' @click="previous()") 上一步
     .fourStep(v-if='active==3')
@@ -81,7 +79,7 @@ export default {
   data() {
     return {
       drawer: false,
-      active: 1,
+      active: 0,
       searchValue: "",
       audio: [
         {
@@ -122,7 +120,7 @@ export default {
         bpm: 1,
         duration: 0,
         key_count: 7,
-        difficulty: 1.5,
+        difficulty: null,
         origin_song: "",
         youtube_id: "",
         video_url: "",
@@ -138,8 +136,8 @@ export default {
           { required: true, message: "請輸入標題", trigger: "blur" },
           {
             min: 1,
-            max: 100,
-            message: "長度請控制在100個字以內",
+            max: 200,
+            message: "長度請控制在200個字以內",
             trigger: "blur",
           },
         ],
@@ -219,7 +217,7 @@ export default {
         part: ["snippet,contentDetails,statistics"],
         id: ID,
       });
-      const component = this;
+      let component = this;
       request.execute(function (response) {
         response.items.map((item) => {
           try {
@@ -234,6 +232,8 @@ export default {
                 "https://www.youtube.com/embed/" + item.id;
               component.music_data.img_src =
                 "http://img.youtube.com/vi/" + item.id + "/0.jpg";
+              component.music_data.mapper = component.getUser.name;
+              component.music_data.mapper_id = component.getUser.id;
             }
           } catch (error) {
             console.log(error);
@@ -246,6 +246,7 @@ export default {
         if (valid) {
           this.next();
           this.applySetting();
+          this.setRandomSlider();
         } else {
           return false;
         }
@@ -253,6 +254,21 @@ export default {
     },
     applySetting() {
       this.music_data.map_data = this.getMapSetting;
+    },
+    setRandomSlider() {
+      this.music_data.map_data.forEach((data) => {
+        if (data.timeStamp.length === 0) {
+          for (let i = 0; i < 5; i++) {
+            data.timeStamp.push(Math.random() * 10);
+          }
+        }
+        data.timeStamp.sort();
+      });
+    },
+    deleteRandomSlider() {
+      this.music_data.map_data.forEach((data) => {
+        data.timeStamp = [];
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -277,13 +293,10 @@ export default {
       this.active--;
     },
     confirm() {
+      this.deleteRandomSlider();
       this.axios
-        .post(import.meta.env.VITE_BACK_URL + "/data", [
-          "music_data",
-          this.music_data,
-        ])
+        .post(import.meta.env.VITE_BACK_URL + "/music_data", this.music_data)
         .then((res) => {
-          console.log(res.data);
           this.next();
           this.$notify({
             title: "Map Data",
@@ -305,8 +318,6 @@ export default {
   mounted() {
     gapi.client.load("youtube", "v3");
     gapi.client.setApiKey(import.meta.env.VITE_YOUTUBE_API);
-    this.music_data.mapper = this.getUser.name;
-    this.music_data.mapper_id = this.getUser.id;
   },
 };
 </script>

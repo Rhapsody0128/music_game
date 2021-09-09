@@ -1,5 +1,5 @@
 <template lang="pug">
-#User
+#Home
   el-header
   el-main
     el-row
@@ -14,9 +14,18 @@ export default {
       all_music_data: null,
     };
   },
+  computed: {
+    getUser() {
+      return this.$store.getters.getUser;
+    },
+  },
   mounted() {
     this.axios
-      .get("http://localhost:4000" + "/data")
+      .get(import.meta.env.VITE_BACK_URL + "/music_data", {
+        params: {
+          mapper_id: this.getUser.id,
+        },
+      })
       .then((res) => {
         this.all_music_data = res.data;
         this.all_music_data.forEach((element) => {

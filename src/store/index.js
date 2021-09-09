@@ -4,7 +4,7 @@ import createPersistedState from "vuex-persistedstate";
 export default createStore({
   state: {
     user: {
-      name: "Gary",
+      name: "GM",
       id: 0,
     },
     setting: {

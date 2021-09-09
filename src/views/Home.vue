@@ -16,7 +16,7 @@ export default {
   },
   mounted() {
     this.axios
-      .get("http://localhost:4000" + "/data")
+      .get(import.meta.env.VITE_BACK_URL + "/music_data")
       .then((res) => {
         this.all_music_data = res.data;
         this.all_music_data.forEach((element) => {

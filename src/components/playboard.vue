@@ -212,6 +212,7 @@ export default {
       };
     },
     setYoutube() {
+      console.log(this.getYoutubeID);
       this.player = new YT.Player("player", {
         videoId: this.getYoutubeID,
         width: "100%",

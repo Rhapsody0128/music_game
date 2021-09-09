@@ -111,6 +111,30 @@ function handleDisconnect() {
     }
   })
 
+  app.get('/users',async(req,res)=>{
+    try {
+      conn.query(getData('users',req.query), function(err, result, fields){
+        res.send(result)
+        console.log('get success');
+      });
+      
+    } catch (error) {
+      console.log(error);
+    }
+  })
+
+  app.post('/users',async(req,res)=>{
+    try {
+      console.log(req.body);
+      conn.query(createData("users",req.body), function(err, result, fields){
+        res.send('insert success')
+        console.log('insert success');
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  })
+
   app.listen(process.env.PORT, () => {
     console.log('網頁伺服器已啟動')
     console.log('http://localhost:'+process.env.PORT);

@@ -45,8 +45,26 @@ export default {
       this.checkUserExist(email);
     },
     logout() {
-      this.isLogging = false;
-      this.$store.commit("logout");
+      this.$confirm("是否登出", "登出", {
+        confirmButtonText: "登出",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true,
+      })
+        .then(() => {
+          this.isLogging = false;
+          this.$store.commit("logout");
+          this.$message({
+            type: "success",
+            message: "已登出",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消登出",
+          });
+        });
     },
     checkUserExist(email) {
       this.axios
@@ -59,6 +77,10 @@ export default {
           if (res.data.length == 0) {
             this.createUser(email);
           } else {
+            this.$message({
+              type: "info",
+              message: "成功登入",
+            });
             this.$store.commit("login", res.data[0]);
             this.isLogging = true;
           }

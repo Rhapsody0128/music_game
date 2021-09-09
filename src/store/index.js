@@ -246,7 +246,6 @@ export default createStore({
       state.setting.mapSetting[map_data.length] = map_data;
     },
     login(state, userData) {
-      console.log(userData);
       state.user.name = userData.name;
       state.user.id = userData.id;
     },

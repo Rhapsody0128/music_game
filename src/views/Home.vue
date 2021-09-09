@@ -23,7 +23,6 @@ export default {
         this.all_music_data.forEach((element) => {
           element.map_data = JSON.parse(element.map_data);
         });
-        console.log(res);
         this.ready = true;
       })
       .catch((error) => {

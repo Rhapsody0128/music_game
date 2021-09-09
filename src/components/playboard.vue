@@ -1,9 +1,9 @@
 <template lang="pug">
 #playboard
   .toolBar
-    el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') 
-    el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') 
-    el-button(@click="gameRestart()" icon='el-icon-refresh-left' round type="warning") 
+    el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary"  :disabled='playerState==1') Play
+    el-button(@click="gamePause()" icon='el-icon-video-pause' round type="success" :disabled='playerState!=1') Pause
+    el-button(@click="gameRestart()" icon='el-icon-refresh-left' round type="warning") Restart
     el-button(round type="info") 
       el-slider(v-model="viewDegree" height="10px" vertical :max='80' @change='setViewDegree()')
     el-slider(v-model="currentTime" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()" v-if="showProgressBar") 

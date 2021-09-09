@@ -318,25 +318,25 @@ export default {
           });
           console.log(error);
         });
-      // this.$confirm("是否把此頁設定覆蓋到預設設定", "覆蓋預設設定", {
-      //   confirmButtonText: "儲存",
-      //   cancelButtonText: "取消",
-      //   type: "warning",
-      //   center: true,
-      // })
-      //   .then(() => {
-      //     this.saveSetting();
-      //     this.$message({
-      //       type: "success",
-      //       message: "已更新預設設定",
-      //     });
-      //   })
-      //   .catch(() => {
-      //     this.$message({
-      //       type: "info",
-      //       message: "保持原本預設設定",
-      //     });
-      //   });
+      this.$confirm("是否把此頁設定覆蓋到預設設定", "覆蓋預設設定", {
+        confirmButtonText: "儲存",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true,
+      })
+        .then(() => {
+          this.saveSetting();
+          this.$message({
+            type: "success",
+            message: "已更新預設設定",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "保持原本預設設定",
+          });
+        });
     },
     leave() {
       this.$router.push({ name: "User" });

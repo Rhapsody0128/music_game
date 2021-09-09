@@ -37,32 +37,35 @@ app.use(cors({
 }))
 
 
-var conn
 
-function handleDisconnect() {
-  conn = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database:process.env.DB_DATEBASE,
-  });  
-  conn.connect( function onConnect(err) {   
-    if (err) { 
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 10000);
-    }
+var conn = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database:process.env.DB_DATEBASE,
+  connectionLimit : 10, // 可以自己設定
+});
+
+var query = function(sql, options, callback) {
+  console.log(sql, options, callback);
+  if (typeof options === "function") {
+      callback = options;
+      options = undefined;
+  }
+  pool.getConnection(function(err, conn){
+      if (err) {
+          callback(err, null, null);
+      } else {
+          conn.query(sql, options, function(err, results, fields){
+              // callback
+              callback(err, results, fields);
+          });
+          // release connection。
+          // 要注意的是，connection 的釋放需要在此 release，而不能在 callback 中 release
+          conn.release();
+      }
   });
-  conn.on('error', function onError(err) {
-    console.log('db error', err);
-    if (err.code == 'PROTOCOL_CONNECTION_LOST') {
-      handleDisconnect(); 
-      console.log('reconnect');
-    } else {
-      console.log('reconnect err');
-      throw err;
-    }
-  });
-}
+};
 
   app.post('/music_data',async(req,res)=>{
     try {
@@ -140,6 +143,4 @@ function handleDisconnect() {
     console.log('http://localhost:'+process.env.PORT);
   })
 
-
-
-  handleDisconnect()
+  export default query

@@ -16,7 +16,7 @@
     }
     keyStr = keyStr.slice(0, -2)
     valueStr = valueStr.slice(0, -2)
-    let result = `insert into ${dataSheet} (${keyStr}) values(${valueStr})`
+    let result = `insert into ${dataSheet}(${keyStr}) values(${valueStr})`
     console.log(result);
     return result
   }
@@ -33,6 +33,7 @@
       }
       result = result + `${dataSheet} where ${key} = ${queryStr}`
     }
+    console.log(result);
     return result
   }
 

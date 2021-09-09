@@ -3,7 +3,7 @@
   "name": "music_game_back_end",
   "version": "1.0.0",
   "engines": {
-    "node": "15.1.0"
+    "node": "16.9.0"
   },
   "scripts": {
     "start":"node index.js",

@@ -5,6 +5,7 @@
     el-row
       el-col(v-if='ready' v-for='music_data in all_music_data' :lg='4' :md='8')
         music_card(:music_data='music_data')
+      el-skeleton.marginTop(v-else :rows="12" animated)
 </template>
 <script>
 export default {
@@ -22,6 +23,7 @@ export default {
         this.all_music_data.forEach((element) => {
           element.map_data = JSON.parse(element.map_data);
         });
+        console.log(res);
         this.ready = true;
       })
       .catch((error) => {

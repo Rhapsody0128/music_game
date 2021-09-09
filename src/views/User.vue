@@ -2,15 +2,19 @@
 #Home
   el-header
   el-main
-    el-row
-      el-col(v-if='ready' v-for='music_data in all_music_data' :lg='4' :md='8')
+    el-row(v-if='ready')
+      el-col(:lg='4' :md='8')
+        music_card(:demo='true') 
+      el-col( v-for='music_data in all_music_data' :lg='4' :md='8')
         music_card(:music_data='music_data')
+    el-skeleton.marginTop(v-else :rows="12" animated)
 </template>
 <script>
 export default {
   data() {
     return {
       ready: false,
+      demo: {},
       all_music_data: {},
     };
   },
@@ -27,6 +31,7 @@ export default {
         },
       })
       .then((res) => {
+        console.log(res);
         this.all_music_data = res.data;
         this.all_music_data.forEach((element) => {
           element.map_data = JSON.parse(element.map_data);

@@ -1,8 +1,9 @@
 <template lang="pug">
 #Edit
-  el-row(justify='center')
+  el-header
+  el-row(justify='center' v-if='ready')
     el-col(:xl='16' :lg='20' :md='24')
-      #editboard(v-if='ready')
+      #editboard()
         .toolBar
           el-button(@click="gameStart()" icon='el-icon-video-play' round type="primary" :disabled='playerState==1') Play
           el-button(@click="gamePause()" icon='el-icon-video-pause' round :disabled='playerState!=1') Pause
@@ -30,6 +31,7 @@
             .full-screen(v-for='(data,index) in music_data.map_data')
               .screen(:id="'S'+data.key")
               el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio,index)" :id="'B'+data.key") {{data.key}}
+  el-skeleton.marginTop(v-else :rows="12" animated)
 </template>
 <script>
 import { h } from "vue";
@@ -123,7 +125,6 @@ export default {
           keyState: false,
         });
       });
-      console.log(this.watchData);
       const component = this;
       document.onkeydown = function (keydownEvent) {
         component.music_data.map_data.map((data) => {

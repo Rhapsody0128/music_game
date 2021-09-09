@@ -3,10 +3,6 @@ import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
-    user: {
-      name: "GM",
-      id: 0,
-    },
     setting: {
       volum: 0.5,
       bpm: 1,
@@ -246,13 +242,14 @@ export default createStore({
       state.setting.mapSetting[map_data.length] = map_data;
     },
     login(state, userData) {
+      console.log(userData);
       state.user.name = userData.name;
       state.user.id = userData.id;
     },
     logout(state) {
       state.user = {
         name: "",
-        id: -1,
+        id: null,
       };
     },
   },

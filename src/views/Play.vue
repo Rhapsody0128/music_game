@@ -1,8 +1,10 @@
 <template lang="pug">
 #Play
-  el-row(justify='center')
+  el-header
+  el-row(justify='center' v-if='ready' )
     el-col(:xl='16' :lg='20' :md='24')
-      playboard(v-if='ready' :music_data="music_data" )
+      playboard(:music_data="music_data" )
+  el-skeleton.marginTop(v-else :rows="12" animated)
 </template>
 <script>
 export default {

@@ -1,21 +1,26 @@
 <template lang="pug">
 #App
   #Nav
-    el-menu.el-menu-demo(mode='horizontal' :router='true')
+    el-menu(mode='horizontal' :router='true')
       el-menu-item(index='/') Home
-      el-menu-item(index='edit') Edit
-      el-menu-item(index='play') Play
-      el-menu-item(index='form') Form
-      el-menu-item(index='user') User
-      el-menu-item(@click="login()") Login
-      el-menu-item(@click="logout()") Logout
+      el-menu-item(index='user' v-if="isLogging") User
+      el-menu-item(index='user' disabled v-else) User
+      el-avatar.avastr(v-if="isLogging" @click="logout()") {{getUser.name}}
+      el-avatar.avastr(v-else icon='el-icon-user-solid' @click="login()")
   router-view
 </template>
 <script>
 import { h } from "vue";
 export default {
   data() {
-    return {};
+    return {
+      isLogging: false,
+    };
+  },
+  computed: {
+    getUser() {
+      return this.$store.getters.getUser;
+    },
   },
   methods: {
     async login() {
@@ -31,7 +36,6 @@ export default {
           async function (res) {
             email = res.Ws.Ht;
             console.log("Sign-in successful");
-            // component
           },
           function (err) {
             console.log("Error signing in", err);
@@ -41,6 +45,7 @@ export default {
       this.checkUserExist(email);
     },
     logout() {
+      this.isLogging = false;
       this.$store.commit("logout");
     },
     checkUserExist(email) {
@@ -54,7 +59,8 @@ export default {
           if (res.data.length == 0) {
             this.createUser(email);
           } else {
-            this.$store.commit("login", res[0]);
+            this.$store.commit("login", res.data[0]);
+            this.isLogging = true;
           }
         })
         .catch((error) => {
@@ -65,7 +71,6 @@ export default {
       this.$prompt("新增帳號", "請輸入暱稱", {
         confirmButtonText: "確認",
         cancelButtonText: "取消",
-        // inputPattern: /{20}/,
         inputErrorMessage: "名字請控制在20字內",
       })
         .then(({ value }) => {
@@ -102,7 +107,9 @@ export default {
     },
   },
   mounted() {
-    // this.checkUserExist("email");
+    if (this.getUser.id !== null) {
+      this.isLogging = true;
+    }
   },
 };
 </script>
@@ -119,4 +126,15 @@ export default {
   #Nav
     position fixed
     z-index 2
+    width 100%
+    opacity 0.3
+    transition 1s
+    .avastr
+      float right
+      cursor pointer
+      position absolute
+      right  0
+      transform translate(-30%,30%)
+    &:hover
+      opacity 1
 </style>

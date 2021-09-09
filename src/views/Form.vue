@@ -305,7 +305,6 @@ export default {
       this.axios
         .post(import.meta.env.VITE_BACK_URL + "/music_data", this.music_data)
         .then((res) => {
-          console.log(res);
           this.next();
           this.$notify({
             title: "Map Data",

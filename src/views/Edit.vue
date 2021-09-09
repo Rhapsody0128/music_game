@@ -148,9 +148,8 @@ export default {
       this.setYoutbe();
     },
     setYoutbe() {
-      const component = this;
       this.player = new YT.Player("player", {
-        videoId: component.music_data.youtube_id,
+        videoId: this.music_data.youtube_id,
         width: "100%",
         height: "100%",
         playerVars: {

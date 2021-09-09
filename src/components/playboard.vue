@@ -12,7 +12,7 @@
     span |   Combo:{{combo}} 次
   .row(:style='playBoardStyle()')
     .player
-      #player(v-if='ready')
+      #player(:id="'player'+ music_data.youtube_id")
     .full-screen(v-for='(data,index) in music_data.map_data' )
       .screen(:id="'S'+data.key")
         game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 
@@ -216,6 +216,22 @@ export default {
           }
         });
       };
+      this.setYoutube();
+    },
+    setYoutube() {
+      this.player = new YT.Player("player", {
+        videoId: this.music_data.youtube_id,
+        width: "100%",
+        height: "100%",
+        playerVars: {
+          loop: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: this.onPlayerReady,
+          onStateChange: this.onPlayerStateChange,
+        },
+      });
     },
     appendEffect(key, position, color) {
       const screen = document.getElementById("S" + key);
@@ -273,19 +289,6 @@ export default {
     },
   },
   mounted() {
-    this.player = new YT.Player("player", {
-      videoId: this.music_data.youtube_id,
-      width: "100%",
-      height: "100%",
-      playerVars: {
-        loop: 1,
-        rel: 0,
-      },
-      events: {
-        onReady: this.onPlayerReady,
-        onStateChange: this.onPlayerStateChange,
-      },
-    });
     this.init();
   },
   watch: {

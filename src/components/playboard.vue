@@ -12,7 +12,7 @@
     span |   Combo:{{combo}} 次
   .row(:style='playBoardStyle()')
     .player
-      #player(:id="'player'+ music_data.youtube_id")
+      #player
     .full-screen(v-for='(data,index) in music_data.map_data' )
       .screen(:id="'S'+data.key")
         game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 

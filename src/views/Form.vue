@@ -1,10 +1,9 @@
 <template lang="pug">
 #Form
-  el-header
   el-main
     .firstStep(v-if='active==0')
       h3 找到你要製作的音樂:
-      el-input.marginTop(v-model='searchValue' placeholder='請輸入youtube網址' @keyup.enter='search(searchValue)')
+      el-input.marginTop(v-model='searchValue' placeholder='請輸入youtube網址/電腦版含有"watch?v="的單影片網址(沒有channel)' @keyup.enter='search(searchValue)')
         template(#append)
           el-button(@click="search(searchValue)" icon="el-icon-search" circle)
       .youtubeCard.marginTop(v-if='music_data.youtube_id.length>0')
@@ -30,7 +29,7 @@
         el-input(v-model='music_data.title')
       el-form-item(label='作者' prop='mapper')
         el-input(v-model='music_data.mapper')
-      el-form-item(label='節奏速度' prop='bpm')
+      el-form-item(label='落下速度' prop='bpm')
         el-radio-group(v-model='music_data.bpm')
           el-radio-button(:label='0.25') 極慢
           el-radio-button(:label='0.5') 慢
@@ -38,7 +37,7 @@
           el-radio-button(:label='1.5') 快
           el-radio-button(:label='2') 極快
       el-form-item(label='鍵位數量' prop='key_count')
-        el-slider(v-model="music_data.key_count" height="300" :min='1' :max='7')
+        el-input-number(v-model='music_data.key_count'  :min='1' :max='7' label='健位數量')
       el-form-item
         el-button(type='primary' @click="submitForm('map_data')") 確認
         el-button(@click="resetForm('map_data')") 重寫
@@ -199,8 +198,10 @@ export default {
       this.getInfo(this.getYoutubeID(searchValue));
     },
     getYoutubeID(youtubeUrl) {
-      let result = youtubeUrl.split("?v=");
-      return result[1];
+      let result1 = youtubeUrl.split("?v=");
+      let result2 = result1[1].split("&");
+      console.log(result2);
+      return result2[0];
     },
     getDuration(duration) {
       var rules = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;

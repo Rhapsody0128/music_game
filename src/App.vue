@@ -54,6 +54,9 @@ export default {
         .then(() => {
           this.isLogging = false;
           this.$store.commit("logout");
+          this.$router.push({
+            name: "Home",
+          });
           this.$message({
             type: "success",
             message: "已登出",
@@ -83,6 +86,9 @@ export default {
             });
             this.$store.commit("login", res.data[0]);
             this.isLogging = true;
+            this.$router.push({
+              name: "User",
+            });
           }
         })
         .catch((error) => {

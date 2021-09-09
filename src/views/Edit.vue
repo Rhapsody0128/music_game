@@ -60,6 +60,9 @@ export default {
     getVolum() {
       return this.$store.getters.getVolum;
     },
+    getUser() {
+      return this.$store.getters.getUser;
+    },
   },
   methods: {
     gameStart() {
@@ -315,6 +318,14 @@ export default {
     onPlayerStateChange(e) {
       this.playerState = e.data;
     },
+    checkUser() {
+      if (this.getUser.id !== this.music_data.mapper_id) {
+        this.$router.push({
+          name: "Home",
+        });
+        console.log("你是誰?亂來");
+      }
+    },
   },
   async mounted() {
     await this.axios
@@ -332,6 +343,7 @@ export default {
         console.log(error);
       });
     this.init();
+    this.checkUser();
   },
   watch: {
     "watchData.0.keyState": {

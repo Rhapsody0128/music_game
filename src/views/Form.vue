@@ -3,7 +3,7 @@
   el-main
     .firstStep(v-if='active==0')
       h3 找到你要製作的音樂:
-      el-input.marginTop(v-model='searchValue' placeholder='請輸入youtube網址/電腦版含有"watch?v="的單影片網址(沒有channel)' @keyup.enter='search(searchValue)')
+      el-input.marginTop(v-model='searchValue' placeholder='請輸入youtube網址/電腦版含有"watch?v="' @keyup.enter='search(searchValue)')
         template(#append)
           el-button(@click="search(searchValue)" icon="el-icon-search" circle)
       .youtubeCard.marginTop(v-if='music_data.youtube_id.length>0')

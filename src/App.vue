@@ -25,6 +25,7 @@ export default {
   methods: {
     async login() {
       let email = "";
+      let component = this;
       window.gapi.load("auth2");
       await window.gapi.auth2.init({
         clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
@@ -36,13 +37,13 @@ export default {
           async function (res) {
             email = res.Ws.Ht;
             console.log("Sign-in successful");
+            component.checkUserExist(email);
           },
           function (err) {
             console.log("Error signing in", err);
           }
         );
       window.gapi.auth2.getAuthInstance().disconnect();
-      this.checkUserExist(email);
     },
     logout() {
       this.$confirm("是否登出", "登出", {

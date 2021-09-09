@@ -27,6 +27,9 @@
 </template>
 <script>
 export default {
+  activated: function () {
+    this.getCase();
+  },
   props: {
     music_data: Object,
     showProgressBar: {

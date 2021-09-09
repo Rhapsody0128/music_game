@@ -5,7 +5,7 @@
     el-row(v-if='ready')
       el-col(:lg='4' :md='8')
         music_card(:demo='true') 
-      el-col( v-for='music_data in all_music_data' :lg='4' :md='8')
+      el-col( v-for='music_data in all_music_data' :lg='4' :md='8' :sm='12')
         music_card(:music_data='music_data')
     el-skeleton.marginTop(v-else :rows="12" animated)
 </template>

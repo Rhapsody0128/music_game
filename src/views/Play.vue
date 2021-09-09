@@ -17,6 +17,7 @@ export default {
   methods: {},
   computed: {},
   mounted() {
+    this.$forceUpdate;
     this.ready = false;
     this.axios
       .get(import.meta.env.VITE_BACK_URL + "/music_data", {

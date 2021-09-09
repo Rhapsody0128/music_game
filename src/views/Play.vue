@@ -3,7 +3,7 @@
   el-header
   el-row(justify='center' v-if='ready' )
     el-col(:xl='16' :lg='20' :md='24')
-      playboard(:music_data="music_data" )
+      playboard(v-if='ready'  :music_data="music_data" )
   el-skeleton.marginTop(v-else :rows="12" animated)
 </template>
 <script>

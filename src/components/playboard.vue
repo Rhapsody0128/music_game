@@ -55,13 +55,15 @@ export default {
     },
     getBpm() {
       return this.music_data.bpm;
-      // return this.$store.getters.getBpm;
     },
     getViewDegree() {
       return this.$store.getters.getViewDegree;
     },
     getVolum() {
       return this.$store.getters.getVolum;
+    },
+    getYoutubeID() {
+      return this.music_data.youtube_id;
     },
     judgeLine() {
       if (this.getBpm === 1) {
@@ -208,26 +210,22 @@ export default {
           }
         });
       };
-      this.setYoutube();
     },
     setYoutube() {
-      this.player = null;
-      setTimeout(() => {
-        this.player = new YT.Player("player", {
-          videoId: this.music_data.youtube_id,
-          width: "100%",
-          height: "100%",
-          playerVars: {
-            loop: 1,
-            rel: 0,
-            controls: 0,
-          },
-          events: {
-            onReady: this.onPlayerReady,
-            onStateChange: this.onPlayerStateChange,
-          },
-        });
-      }, 1000);
+      this.player = new YT.Player("player", {
+        videoId: this.getYoutubeID,
+        width: "100%",
+        height: "100%",
+        playerVars: {
+          loop: 1,
+          rel: 0,
+          controls: 0,
+        },
+        events: {
+          onReady: this.onPlayerReady,
+          onStateChange: this.onPlayerStateChange,
+        },
+      });
     },
     appendEffect(key, position, color) {
       const screen = document.getElementById("S" + key);
@@ -286,6 +284,7 @@ export default {
   },
   mounted() {
     this.init();
+    this.setYoutube();
   },
   watch: {
     "watchData.0.keyState": {

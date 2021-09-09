@@ -18,6 +18,7 @@ export default {
   },
   methods: {
     async login() {
+      let email = "";
       window.gapi.load("auth2");
       await window.gapi.auth2.init({
         clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
@@ -27,18 +28,16 @@ export default {
         .signIn()
         .then(
           async function (res) {
-            console.log(res);
-            console.log(res.Ws);
-            let email = res.Ws.Ht;
+            email = res.Ws.Ht;
             console.log("Sign-in successful");
-            this.checkUserExist(email);
+            // component
           },
           function (err) {
             console.log("Error signing in", err);
           }
         );
-      this.$store.commit("login", component.name);
       window.gapi.auth2.getAuthInstance().disconnect();
+      this.checkUserExist(email);
     },
     logout() {
       this.confirmLogout = false;
@@ -63,7 +62,7 @@ export default {
         });
     },
     createUser(email) {
-      this.$prompt("請輸入名字", "提示", {
+      this.$prompt("新增帳號", "請輸入暱稱", {
         confirmButtonText: "確認",
         cancelButtonText: "取消",
         // inputPattern: /{20}/,
@@ -103,8 +102,7 @@ export default {
     },
   },
   mounted() {
-    this.checkUserExist("aaa");
-    // this.createUser("asd");
+    // this.checkUserExist("email");
   },
 };
 </script>

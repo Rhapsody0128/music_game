@@ -91,6 +91,21 @@
     result = result += setStr += queryStr
     return result
   }
+
+  var deleteData = (dataSheet,query) =>{
+    let key = Object.keys(query)
+    let result = `delete from ${dataSheet} `
+    let queryStr = ''
+    if(query[key] == undefined){
+      result = result + dataSheet
+    } else{
+      if(typeof(query[key])==='string'){
+        queryStr = `'${query[key]}'`
+      }
+      result = result + `where ${key} = ${queryStr}`
+    }
+    return result
+  }
   
   // let result = `update ${dataSheet} set ${dataField} = ${} where ${key} = ${queryStr}`
-export {createData,getData,updateData}
+export {createData,getData,updateData,deleteData}

@@ -66,28 +66,49 @@ function handleDisconnect() {
 }
 
   app.post('/music_data',async(req,res)=>{
-    conn.query(createData("music_data",req.body), function(err, result, fields){
-      if(err) throw err;
-      res.send('insert success')
-      console.log('insert success');
-    });
+    try {
+      conn.query(createData("music_data",req.body), function(err, result, fields){
+        res.send('insert success')
+        console.log('insert success');
+      });
+    } catch (error) {
+      console.log(error);
+    }
   })
 
   app.get('/music_data',async(req,res)=>{
-    conn.query(getData('music_data',req.query), function(err, result, fields){
-      if(err) throw err;
-      res.send(result)
-      console.log('get success');
-    });
+    try {
+      conn.query(getData('music_data',req.query), function(err, result, fields){
+        res.send(result)
+        console.log('get success');
+      });
+      
+    } catch (error) {
+      console.log(error);
+    }
   })
 
   app.patch('/music_data',async(req,res)=>{
-    console.log(req.body);
-    conn.query(updateData('music_data',req.body.data,req.body.query), function(err, result, fields){
-      if(err) throw err;
-      res.send(result)
-      console.log('get success');
-    });
+    try {
+      conn.query(updateData('music_data',req.body.data,req.body.query), function(err, result, fields){
+        res.send(result)
+        console.log('patch success');
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  })
+  
+  app.delete('/music_data',async(req,res)=>{
+    try {
+      conn.query(deleteData('music_data',req.query), function(err, result, fields){
+        res.send(result)
+        console.log('delete success');
+      });
+      
+    } catch (error) {
+      console.log(error);
+    }
   })
 
   app.listen(process.env.PORT, () => {

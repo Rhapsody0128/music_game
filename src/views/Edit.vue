@@ -148,6 +148,7 @@ export default {
       this.setYoutbe();
     },
     setYoutbe() {
+      this.player = null;
       this.player = new YT.Player("player", {
         videoId: this.music_data.youtube_id,
         width: "100%",
@@ -155,6 +156,7 @@ export default {
         playerVars: {
           loop: 1,
           rel: 0,
+          controls: 0,
         },
         events: {
           onReady: this.onPlayerReady,

@@ -38,15 +38,15 @@ export default {
     sneak() {
       if (!this.break) {
         if (this.bpm === 1) {
-          return this.currentTime + 1.15;
+          return this.currentTime + 1.28;
         } else if (this.bpm === 1.5) {
-          return this.currentTime + 0.83;
+          return this.currentTime + 0.84;
         } else if (this.bpm === 2) {
-          return this.currentTime + 0.56;
+          return this.currentTime + 0.6;
         } else if (this.bpm === 0.5) {
-          return this.currentTime + 2.1;
+          return this.currentTime + 2.67;
         } else if (this.bpm === 0.25) {
-          return this.currentTime + 4.35;
+          return this.currentTime + 5.28;
         }
       }
     },
@@ -73,7 +73,7 @@ export default {
 <style lang="stylus" scoped>
 .game_slider
   width 100%
-  height 1.1rem
+  height 2.5%
   top 5%
   position absolute
   border-radius 1rem

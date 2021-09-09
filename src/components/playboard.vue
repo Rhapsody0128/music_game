@@ -64,28 +64,20 @@ export default {
       return this.$store.getters.getVolum;
     },
     judgeLine() {
-      // [
-      //   perfectLineStart,
-      //   perfectLineEnd,
-      //   ellectLineStart,
-      //   ellectLineEnd,
-      //   goodLineStart,
-      //   goodLineEnd,
-      // ];
       if (this.getBpm === 1) {
-        return [80.25, 79.75, 82, 75, 85, 70];
+        return [95, 92, 87];
       }
       if (this.getBpm === 1.5) {
-        return [80.5, 78.5, 83, 74, 85, 68];
+        return [94.5, 91, 85];
       }
       if (this.getBpm === 2) {
-        return [81, 78, 84, 73, 89, 66];
+        return [94, 90, 82];
       }
       if (this.getBpm === 0.5) {
-        return [79.8, 79.2, 82, 76, 84, 72];
+        return [96, 94, 90];
       }
       if (this.getBpm === 0.25) {
-        return [79.6, 79.4, 81, 78, 83, 75];
+        return [97, 95.5, 92];
       }
     },
   },
@@ -95,9 +87,9 @@ export default {
       this.player.playVideo();
       this.lifeTimer = setInterval(() => {
         if (this.playerState === 1) {
-          this.currentTime += 0.015;
+          this.currentTime += 0.01;
         }
-      }, 15);
+      }, 10);
     },
     gamePause() {
       this.player.pauseVideo();
@@ -150,20 +142,20 @@ export default {
     },
     judge(position) {
       var word = "";
-      if (this.judgeLine[0] >= position && position >= this.judgeLine[1]) {
+      if (this.judgeLine[0] <= position) {
         this.score += 100;
         this.combo++;
         word = "perfect";
       } else if (
-        (this.judgeLine[2] >= position && position >= this.judgeLine[0]) ||
-        (this.judgeLine[1] >= position && position >= this.judgeLine[3])
+        this.judgeLine[1] <= position &&
+        position < this.judgeLine[0]
       ) {
         this.score += 30;
         this.combo++;
         word = "excellent";
       } else if (
-        (this.judgeLine[4] >= position && position >= this.judgeLine[2]) ||
-        (this.judgeLine[3] >= position && position >= this.judgeLine[5])
+        this.judgeLine[2] <= position &&
+        position < this.judgeLine[1]
       ) {
         this.score += 10;
         this.combo++;
@@ -369,15 +361,16 @@ export default {
       position relative
       &:after
         width 100%
-        height 1rem
+        height 2.5%
         border-radius 1rem
         position absolute
         left 0%
-        top 80%
+        top 97.5%
         text-align center
         transition 0.5
         content ''
         box-shadow 0px 0px 2px black
+
     .button
       position relative
       width 100%

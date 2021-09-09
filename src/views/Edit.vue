@@ -301,7 +301,7 @@ export default {
       const effect = document.createElement("div");
       effect.appendChild(document.createTextNode(`perfect`));
       effect.classList.add("perfectEffect");
-      effect.style.top = "80%";
+      effect.style.top = "97.5%";
       effect.style.background = color;
       screen.appendChild(effect);
     },
@@ -441,10 +441,10 @@ export default {
       overflow hidden
       &:after
         width 100%
-        height 1rem
+        height 2.5%
         border-radius 1rem
         position absolute
-        top 80%
+        top 97.5%
         left 0%
         text-align center
         transition 0.5

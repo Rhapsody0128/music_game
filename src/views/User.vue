@@ -31,7 +31,6 @@ export default {
         },
       })
       .then((res) => {
-        console.log(res);
         this.all_music_data = res.data;
         this.all_music_data.forEach((element) => {
           element.map_data = JSON.parse(element.map_data);

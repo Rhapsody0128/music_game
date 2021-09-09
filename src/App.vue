@@ -8,6 +8,7 @@
       el-menu-item(index='form') Form
       el-menu-item(index='user') User
       el-menu-item(@click="login()") Login
+      el-menu-item(@click="logout()") Logout
   router-view
 </template>
 <script>
@@ -40,7 +41,6 @@ export default {
       this.checkUserExist(email);
     },
     logout() {
-      this.confirmLogout = false;
       this.$store.commit("logout");
     },
     checkUserExist(email) {

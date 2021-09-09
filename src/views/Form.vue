@@ -129,7 +129,7 @@ export default {
         love_count: 0,
         play_count: 0,
         view_count: 0,
-        map_data: null,
+        map_data: {},
       },
       rules: {
         title: [

@@ -9,7 +9,7 @@ export default {
   data() {
     return {
       ready: false,
-      music_data: null,
+      music_data: {},
     };
   },
   methods: {},

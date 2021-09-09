@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       ready: false,
-      all_music_data: null,
+      all_music_data: {},
     };
   },
   mounted() {

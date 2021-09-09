@@ -233,12 +233,6 @@ export default createStore({
       });
       state.edit_music.pop(find);
     },
-    uploadEditMusic(state, id) {
-      let find = state.edit_music.find((data) => {
-        return data.id === id;
-      });
-      state.edit_music.pop(find);
-    },
     setBpm(state, newBpm) {
       state.setting.bpm = newBpm;
     },

@@ -11,15 +11,13 @@
   router-view
 </template>
 <script>
+import { h } from "vue";
 export default {
   data() {
-    return {
-      name: "",
-    };
+    return {};
   },
   methods: {
     async login() {
-      var component = this;
       window.gapi.load("auth2");
       await window.gapi.auth2.init({
         clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
@@ -30,8 +28,10 @@ export default {
         .then(
           async function (res) {
             console.log(res);
-            component.name = res.Ts.Me;
+            console.log(res.Ws);
+            let email = res.Ws.Ht;
             console.log("Sign-in successful");
+            this.checkUserExist(email);
           },
           function (err) {
             console.log("Error signing in", err);
@@ -44,6 +44,67 @@ export default {
       this.confirmLogout = false;
       this.$store.commit("logout");
     },
+    checkUserExist(email) {
+      this.axios
+        .get(import.meta.env.VITE_BACK_URL + "/users", {
+          params: {
+            email: email,
+          },
+        })
+        .then((res) => {
+          if (res.data.length == 0) {
+            this.createUser(email);
+          } else {
+            this.$store.commit("login", res[0]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    createUser(email) {
+      this.$prompt("請輸入名字", "提示", {
+        confirmButtonText: "確認",
+        cancelButtonText: "取消",
+        // inputPattern: /{20}/,
+        inputErrorMessage: "名字請控制在20字內",
+      })
+        .then(({ value }) => {
+          this.$message({
+            type: "success",
+            message: "你好啊" + value,
+          });
+          this.axios
+            .post(import.meta.env.VITE_BACK_URL + "/users", {
+              name: value,
+              email: email,
+            })
+            .then((res) => {
+              this.$notify({
+                title: "成功",
+                message: h("i", { style: "color: teal" }, "成功創建帳號"),
+              });
+              this.checkUserExist(email);
+            })
+            .catch((error) => {
+              this.$notify({
+                title: "失敗",
+                message: h("i", { style: "color: teal" }, "帳號創建失敗"),
+              });
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入",
+          });
+        });
+    },
+  },
+  mounted() {
+    this.checkUserExist("aaa");
+    // this.createUser("asd");
   },
 };
 </script>

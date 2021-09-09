@@ -258,10 +258,9 @@ export default {
           },
         })
         .then((res) => {
-          this.$store.commit("uploadEditMusic", this.music_data.id);
           this.$notify({
             title: "上傳成功",
-            message: h("i", { style: "color: teal" }, "已上傳並清空本地資料"),
+            message: h("i", { style: "color: teal" }, "已上傳資料"),
           });
         })
         .catch((error) => {

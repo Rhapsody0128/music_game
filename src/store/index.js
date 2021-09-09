@@ -196,11 +196,11 @@ export default createStore({
         ],
       ],
     },
-    mapData: null,
+    edit_music: [],
   },
   getters: {
-    getMapData(state) {
-      return state.mapData;
+    getEditMusic(state) {
+      return state.edit_music;
     },
     getBpm(state) {
       return state.setting.bpm;
@@ -219,14 +219,25 @@ export default createStore({
     },
   },
   mutations: {
-    saveMapData(state, newMap) {
-      state.mapData = newMap;
+    saveEditMusic(state, newMap) {
+      let find = state.edit_music.find((data) => {
+        return data.id === newMap.id;
+      });
+      if (find === undefined) {
+        state.edit_music.push(newMap);
+      }
     },
-    clearMapData(state) {
-      state.mapData = null;
+    clearEditMusic(state, id) {
+      let find = state.edit_music.find((data) => {
+        return data.id === id;
+      });
+      state.edit_music.pop(find);
     },
-    uploadMapData(state) {
-      state.mapData = null;
+    uploadEditMusic(state, id) {
+      let find = state.edit_music.find((data) => {
+        return data.id === id;
+      });
+      state.edit_music.pop(find);
     },
     setBpm(state, newBpm) {
       state.setting.bpm = newBpm;
@@ -236,6 +247,18 @@ export default createStore({
     },
     setViewDegree(state, newViewDegree) {
       state.setting.viewDegree = newViewDegree;
+    },
+    saveSetting(state, map_data) {
+      state.setting.mapSetting[map_data.length] = map_data;
+    },
+    login(state, userData) {
+      state.user = userData;
+    },
+    logout(state) {
+      state.user = {
+        name: "",
+        id: -1,
+      };
     },
   },
   actions: {},

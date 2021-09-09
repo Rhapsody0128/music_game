@@ -22,6 +22,7 @@ el-card.music_card(@click="playMusic(music_data.id)" shadow="hover" :body-style=
   
 </template>
 <script>
+import { h } from "vue";
 export default {
   props: {
     music_data: Object,
@@ -43,7 +44,21 @@ export default {
     },
     deleteMusic(id) {
       event.stopPropagation();
-      console.log("aa");
+      this.axios
+        .delete(import.meta.env.VITE_BACK_URL + "/music_data", {
+          params: {
+            id: this.music_data.id,
+          },
+        })
+        .then((res) => {
+          this.$notify({
+            title: "刪除",
+            message: h("i", { style: "color: teal" }, "已刪除該音樂"),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     editMusic(id) {
       event.stopPropagation();

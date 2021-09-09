@@ -11,7 +11,6 @@ import "./style.styl";
 
 import music_card from "./components/music_card.vue";
 import playboard from "./components/playboard.vue";
-import editboard from "./components/editboard.vue";
 import game_slider from "./components/game_slider.vue";
 
 const app = createApp(App);
@@ -22,6 +21,5 @@ app.use(ElementPlus);
 app.use(VueAxios, axios);
 app.component("music_card", music_card);
 app.component("playboard", playboard);
-app.component("editboard", editboard);
 app.component("game_slider", game_slider);
 app.mount("#app");

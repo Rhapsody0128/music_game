@@ -65,7 +65,7 @@
         el-button(type='primary' @click="confirm()") 確認
         el-button(type='danger' @click="previous()") 上一步
     .fourStep(v-if='active==3')
-      el-result(icon='success' title='成功提示' subtitle='请根据提示进行操作')
+      el-result(icon='success' title='成功提示')
         template(#extra='')
           el-button(type='primary' size='medium' @click='leave()') 回到個人頁面
   el-steps(:active='active' align-center finish-status='success')
@@ -177,12 +177,17 @@ export default {
       const rules = /[a-z]|[A-Z]|[0-9]/;
       let repeat = false;
       this.music_data.map_data.map((data) => {
-        if (data.key == key) {
+        if (data.key.toLowerCase() == key.toLowerCase()) {
           repeat = true;
         }
       });
       if (rules.test(key) && !repeat) {
         this.music_data.map_data[index].key = key;
+      } else {
+        this.$notify({
+          title: "錯誤",
+          message: h("i", { style: "color: red" }, "同健位已被設定"),
+        });
       }
     },
     getButtonStyle(color) {
@@ -255,6 +260,9 @@ export default {
     applySetting() {
       this.music_data.map_data = this.getMapSetting;
     },
+    saveSetting() {
+      this.$store.commit("saveSetting", this.music_data.map_data);
+    },
     setRandomSlider() {
       this.music_data.map_data.forEach((data) => {
         if (data.timeStamp.length === 0) {
@@ -297,6 +305,7 @@ export default {
       this.axios
         .post(import.meta.env.VITE_BACK_URL + "/music_data", this.music_data)
         .then((res) => {
+          console.log(res);
           this.next();
           this.$notify({
             title: "Map Data",
@@ -310,6 +319,25 @@ export default {
           });
           console.log(error);
         });
+      // this.$confirm("是否把此頁設定覆蓋到預設設定", "覆蓋預設設定", {
+      //   confirmButtonText: "儲存",
+      //   cancelButtonText: "取消",
+      //   type: "warning",
+      //   center: true,
+      // })
+      //   .then(() => {
+      //     this.saveSetting();
+      //     this.$message({
+      //       type: "success",
+      //       message: "已更新預設設定",
+      //     });
+      //   })
+      //   .catch(() => {
+      //     this.$message({
+      //       type: "info",
+      //       message: "保持原本預設設定",
+      //     });
+      //   });
     },
     leave() {
       this.$router.push({ name: "User" });

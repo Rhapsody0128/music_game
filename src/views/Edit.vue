@@ -27,7 +27,7 @@
         .row
           .col(:style='editBoardStyle()')
             .player
-              #player
+              #player(v-if='ready')
             .full-screen(v-for='(data,index) in music_data.map_data')
               .screen(:id="'S'+data.key")
               el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio,index)" :id="'B'+data.key") {{data.key}}

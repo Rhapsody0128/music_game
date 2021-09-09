@@ -3,6 +3,10 @@ import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
+    user: {
+      name: "",
+      id: null,
+    },
     setting: {
       volum: 0.5,
       bpm: 1,

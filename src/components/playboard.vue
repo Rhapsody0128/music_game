@@ -227,7 +227,7 @@ export default {
             onStateChange: this.onPlayerStateChange,
           },
         });
-      }, 200);
+      }, 500);
     },
     appendEffect(key, position, color) {
       const screen = document.getElementById("S" + key);

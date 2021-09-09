@@ -165,7 +165,7 @@ export default {
             onStateChange: this.onPlayerStateChange,
           },
         });
-      }, 200);
+      }, 1000);
     },
     saveMapData() {
       this.music_data.map_data.forEach((data) => {

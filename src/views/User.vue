@@ -1,5 +1,6 @@
 <template lang="pug">
 #Home
+  el-header
   el-main
     el-row(v-if='ready')
       el-col(:lg='4' :md='8')

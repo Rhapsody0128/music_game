@@ -20,6 +20,9 @@ export default {
   },
   computed: {
     gameSliderStyle() {
+      if (this.top > 100) {
+        this.break = true;
+      }
       return {
         top: this.top + "%",
         background: this.color,
@@ -33,16 +36,18 @@ export default {
       }
     },
     sneak() {
-      if (this.bpm === 1) {
-        return this.currentTime + 1.15;
-      } else if (this.bpm === 1.5) {
-        return this.currentTime + 0.83;
-      } else if (this.bpm === 2) {
-        return this.currentTime + 0.56;
-      } else if (this.bpm === 0.5) {
-        return this.currentTime + 2.1;
-      } else if (this.bpm === 0.25) {
-        return this.currentTime + 4.35;
+      if (!this.break) {
+        if (this.bpm === 1) {
+          return this.currentTime + 1.15;
+        } else if (this.bpm === 1.5) {
+          return this.currentTime + 0.83;
+        } else if (this.bpm === 2) {
+          return this.currentTime + 0.56;
+        } else if (this.bpm === 0.5) {
+          return this.currentTime + 2.1;
+        } else if (this.bpm === 0.25) {
+          return this.currentTime + 4.35;
+        }
       }
     },
     exist() {

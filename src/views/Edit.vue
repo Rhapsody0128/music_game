@@ -146,24 +146,26 @@ export default {
         });
       };
       this.setYoutbe();
+      this.findAndAutoLoad();
     },
     setYoutbe() {
       this.player = null;
-      this.player = new YT.Player("player", {
-        videoId: this.music_data.youtube_id,
-        width: "100%",
-        height: "100%",
-        playerVars: {
-          loop: 1,
-          rel: 0,
-          controls: 0,
-        },
-        events: {
-          onReady: this.onPlayerReady,
-          onStateChange: this.onPlayerStateChange,
-        },
-      });
-      this.findAndAutoLoad();
+      setTimeout(() => {
+        this.player = new YT.Player("player", {
+          videoId: this.music_data.youtube_id,
+          width: "100%",
+          height: "100%",
+          playerVars: {
+            loop: 1,
+            rel: 0,
+            controls: 0,
+          },
+          events: {
+            onReady: this.onPlayerReady,
+            onStateChange: this.onPlayerStateChange,
+          },
+        });
+      }, 200);
     },
     saveMapData() {
       this.music_data.map_data.forEach((data) => {

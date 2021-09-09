@@ -220,20 +220,22 @@ export default {
     },
     setYoutube() {
       this.player = null;
-      this.player = new YT.Player("player", {
-        videoId: this.music_data.youtube_id,
-        width: "100%",
-        height: "100%",
-        playerVars: {
-          loop: 1,
-          rel: 0,
-          controls: 0,
-        },
-        events: {
-          onReady: this.onPlayerReady,
-          onStateChange: this.onPlayerStateChange,
-        },
-      });
+      setTimeout(() => {
+        this.player = new YT.Player("player", {
+          videoId: this.music_data.youtube_id,
+          width: "100%",
+          height: "100%",
+          playerVars: {
+            loop: 1,
+            rel: 0,
+            controls: 0,
+          },
+          events: {
+            onReady: this.onPlayerReady,
+            onStateChange: this.onPlayerStateChange,
+          },
+        });
+      }, 200);
     },
     appendEffect(key, position, color) {
       const screen = document.getElementById("S" + key);

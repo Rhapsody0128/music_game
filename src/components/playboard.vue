@@ -27,15 +27,13 @@
 </template>
 <script>
 export default {
-  activated: function () {
-    this.getCase();
-  },
   props: {
     music_data: Object,
     showProgressBar: {
       type: Boolean,
       default: false,
     },
+    youtube_id: String,
   },
   data() {
     return {
@@ -64,9 +62,6 @@ export default {
     },
     getVolum() {
       return this.$store.getters.getVolum;
-    },
-    getYoutubeID() {
-      return this.music_data.youtube_id;
     },
     judgeLine() {
       if (this.getBpm === 1) {
@@ -213,11 +208,12 @@ export default {
           }
         });
       };
+      this.setYoutube();
     },
     setYoutube() {
-      console.log(this.getYoutubeID);
+      console.log(this.youtube_id);
       this.player = new YT.Player("player", {
-        videoId: this.getYoutubeID,
+        videoId: this.youtube_id,
         width: "100%",
         height: "100%",
         playerVars: {
@@ -288,7 +284,6 @@ export default {
   },
   mounted() {
     this.init();
-    this.setYoutube();
   },
   watch: {
     "watchData.0.keyState": {

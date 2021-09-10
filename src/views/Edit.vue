@@ -27,7 +27,7 @@
         .row
           .col(:style='editBoardStyle()')
             .player
-              #player(v-if='ready')
+              #player
             .full-screen(v-for='(data,index) in music_data.map_data')
               .screen(:id="'S'+data.key")
               el-button.button(:style="getButtonStyle(data.color)" size="medium" @click="hit(data.key,data.color,data.audio,index)" :id="'B'+data.key") {{data.key}}
@@ -147,9 +147,9 @@ export default {
       };
       this.findAndAutoLoad();
     },
-    setYoutbe(youtubeID) {
+    setYoutbe() {
       this.player = new YT.Player("player", {
-        videoId: youtubeID,
+        videoId: this.music_data.youtube_id,
         width: "100%",
         height: "100%",
         playerVars: {
@@ -337,12 +337,12 @@ export default {
         this.music_data = res.data[0];
         this.music_data.map_data = JSON.parse(res.data[0].map_data);
         this.ready = true;
-        this.setYoutbe(this.music_data.youtubeID);
       })
       .catch((error) => {
         console.log(error);
       });
     this.init();
+    this.setYoutbe();
     this.checkUser();
   },
   watch: {

@@ -147,7 +147,7 @@ export default {
       };
       this.findAndAutoLoad();
     },
-    setYoutbe() {
+    setYoutube() {
       this.player = new YT.Player("player", {
         videoId: this.music_data.youtube_id,
         width: "100%",
@@ -342,7 +342,7 @@ export default {
         console.log(error);
       });
     this.init();
-    this.setYoutbe();
+    this.setYoutube();
     this.checkUser();
   },
   watch: {

@@ -33,7 +33,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    youtube_id: String,
   },
   data() {
     return {
@@ -211,9 +210,8 @@ export default {
       this.setYoutube();
     },
     setYoutube() {
-      console.log(this.youtube_id);
       this.player = new YT.Player("player", {
-        videoId: this.youtube_id,
+        videoId: this.music_data.youtube_id,
         width: "100%",
         height: "100%",
         playerVars: {

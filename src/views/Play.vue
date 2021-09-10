@@ -10,13 +10,12 @@
           el-button(@click="gameRestart()" icon='el-icon-refresh-left' round type="warning") Restart
           el-button(round type="info") 
             el-slider(v-model="viewDegree" height="10px" vertical :max='80' @change='setViewDegree()')
-          el-slider(v-model="currentTime" :max='music_data.duration' show-input @input="seekTo()" @change="seekToConfirm()" v-if="showProgressBar") 
           br
           span 分數:{{score}} 分  
           span |   Combo:{{combo}} 次
         .row(:style='playBoardStyle()')
           .player
-            #player
+            #player(v-if='ready')
           .full-screen(v-for='(data,index) in music_data.map_data' )
             .screen(:id="'S'+data.key")
               game_slider(@click="destroy()" v-for='(timeStamp,index) in data.timeStamp' 
